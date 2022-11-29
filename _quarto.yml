@@ -1,0 +1,26 @@
+project:
+  type: book
+  
+execute: 
+  freeze: auto
+
+book:
+  title: "rindoku_RL"
+  author: "Jane Doe"
+  date: "2022/11/29"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
