@@ -14,11 +14,14 @@ book:
     - chapter2.qmd
     - chapter3.qmd
 
+highlight-style: pygments
+
 format:
   html:
     number-sections: false
     code-copy: true
     theme: cosmo
+    css: css/styles.css
   pdf:
     documentclass: scrreprt
 
