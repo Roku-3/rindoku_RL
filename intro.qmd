@@ -2,12 +2,10 @@
 jupyter: python3
 ---
 
-# Introduction
+# 序章のまとめ
 
-This is a book created from markdown and executable code.
+### 第１版序文
 
-See @knuth84 for additional discussion of literate programming.
+**強化学習**は1979年ごろから存在が知られてきた。
 
-```{python}
-1 + 1
-```
+しかし、筆者は**環境からどのようにして学習するか**、ということにさほど注目されていないことに気がついた。

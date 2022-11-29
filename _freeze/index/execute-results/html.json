@@ -1,7 +1,7 @@
 {
-  "hash": "1ffd8e42ab84ee121ebfd2320a9fdfb5",
+  "hash": "8628fa5fd6851a40041de62d667bafb4",
   "result": {
-    "markdown": "# Preface {.unnumbered}\n\nThis is a Quarto book.aaaaaaaaabbbbcccdddd\n\nTo learn more about Quarto books visit <https://quarto.org/docs/books>.\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\n2\n```\n:::\n:::\n\n\n",
+    "markdown": "参加者: ろく、峻平\n\n# 輪読会にあたって {.unnumbered}\n\n第１章以降、とくに第Ⅱ部（第９章〜）からはそれぞれが独立した内容が多い。\n\n最初にすべての難易度を把握するのは難しいので、毎週次回の担当範囲を決めることとする。\n\n本の内容に沿って解説していき、わからないところがあれば聞き手はよこやりを入れて質問をしてよい。\n\n担当者はすべての質問に答えられるように準備する。\n\n## 当書で使われる記号\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\n2\n```\n:::\n:::\n\n\n## 今後の進め方\n\n二人で共通の文書を編集する形式に賛成であれば、次回までにこの文書をサーバーにアップロードし、峻平への導入方法を考えておく。\n\n| 日時  | ろく         | 峻平         |\n|:-----:|--------------|--------------|\n| 11/30 | 序章         |              |\n| 12/5  | 第一章       |              |\n| 12/12 | 第二章前半？ | 第二章後半？ |\n| 12/19 |              |              |\n| 12/26 |              |              |\n|  1/2  |              |              |\n\nそうでなければ、例えば一人はbook形式、もう一人はスライドを用いて発表する。\n\n",
     "supporting": [
       "index_files/figure-html"
     ],
