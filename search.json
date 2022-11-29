@@ -2,16 +2,30 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "rindoku_RL",
+    "title": "rindoku",
     "section": "",
-    "text": "Preface\naaaaaThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n2"
+    "text": "輪読会にあたって\n第１章以降、とくに第Ⅱ部（第９章〜）からはそれぞれが独立した内容が多い。\n最初にすべての難易度を把握するのは難しいので、毎週次回の担当範囲を決めることとする。\n本の内容に沿って解説していき、わからないところがあれば聞き手はよこやりを入れて質問をしてよい。\n担当者はすべての質問に答えられるように準備する。"
+  },
+  {
+    "objectID": "index.html#当書で使われる記号",
+    "href": "index.html#当書で使われる記号",
+    "title": "rindoku",
+    "section": "当書で使われる記号",
+    "text": "当書で使われる記号\n\n1 + 1\n\n2"
+  },
+  {
+    "objectID": "index.html#今後の進め方",
+    "href": "index.html#今後の進め方",
+    "title": "rindoku",
+    "section": "今後の進め方",
+    "text": "今後の進め方\n二人で共通の文書を編集する形式に賛成であれば、次回までにこの文書をサーバーにアップロードし、峻平への導入方法を考えておく。\n\n\n\n日時\nろく\n峻平\n\n\n\n\n11/30\n序章\n\n\n\n12/5\n第一章\n\n\n\n12/12\n第二章前半？\n第二章後半？\n\n\n12/19\n\n\n\n\n12/26\n\n\n\n\n1/2\n\n\n\n\n\nそうでなければ、例えば一人はbook形式、もう一人はスライドを用いて発表する。"
   },
   {
     "objectID": "intro.html",
     "href": "intro.html",
-    "title": "1  Introduction",
+    "title": "1  序章のまとめ",
     "section": "",
-    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+    "text": "1.0.1 第１版序文\n強化学習は1979年ごろから存在が知られてきた。\nしかし、筆者は環境からどのようにして学習するか、ということにさほど注目されていないことに気がついた。"
   },
   {
     "objectID": "summary.html",
@@ -19,12 +33,5 @@
     "title": "2  Summary",
     "section": "",
     "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n2"
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
   }
 ]
