@@ -1,7 +1,7 @@
 {
-  "hash": "4412c79bef0b1362450bd8364c6f12cf",
+  "hash": "61281a3f6d4bbab088e29790c7945e00",
   "result": {
-    "markdown": "# Introduction\n\nThis is a book created from markdown and executable code.\n\nSee @knuth84 for additional discussion of literate programming.\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\n2\n```\n:::\n:::\n\n\n",
+    "markdown": "# 序章のまとめ\n\n### 第１版序文\n\n**強化学習**は1979年ごろから存在が知られてきた。\n\nしかし、筆者は**環境からどのようにして学習するか**、ということにさほど注目されていないことに気がついた。\n\n",
     "supporting": [
       "intro_files"
     ],
