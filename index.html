@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2022-11-29">
 
-<title>強化学習第2版 輪読会</title>
+<title>強化学習 輪読会</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -133,7 +132,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">強化学習第2版 輪読会</h1>
+      <h1 class="quarto-secondary-nav-title">強化学習 輪読会</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -146,7 +145,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">強化学習第2版 輪読会</a> 
+      <a href="./">強化学習 輪読会</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -158,22 +157,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">輪読会にあたって</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">輪読会にあたって</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">序章のまとめ</span></a>
+  <a href="./intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">序章のまとめ</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></a>
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">第１章</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">第２章</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">第３章</span></a>
   </div>
 </li>
     </ul>
@@ -185,10 +189,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#輪読会にあたって" id="toc-輪読会にあたって" class="nav-link active" data-scroll-target="#輪読会にあたって">輪読会にあたって</a>
+  <li><a href="#輪読会にあたって" id="toc-輪読会にあたって" class="nav-link active" data-scroll-target="#輪読会にあたって"><span class="toc-section-number">0.1</span>  輪読会にあたって</a></li>
+  <li><a href="#当書で使われる記号" id="toc-当書で使われる記号" class="nav-link" data-scroll-target="#当書で使われる記号"><span class="toc-section-number">0.2</span>  当書で使われる記号</a></li>
+  <li><a href="#今後の進め方" id="toc-今後の進め方" class="nav-link" data-scroll-target="#今後の進め方"><span class="toc-section-number">0.3</span>  今後の進め方</a></li>
+  <li><a href="#文書の編集方法" id="toc-文書の編集方法" class="nav-link" data-scroll-target="#文書の編集方法"><span class="toc-section-number">0.4</span>  文書の編集方法</a>
   <ul class="collapse">
-  <li><a href="#当書で使われる記号" id="toc-当書で使われる記号" class="nav-link" data-scroll-target="#当書で使われる記号">当書で使われる記号</a></li>
-  <li><a href="#今後の進め方" id="toc-今後の進め方" class="nav-link" data-scroll-target="#今後の進め方">今後の進め方</a></li>
+  <li><a href="#編集内容を適応する" id="toc-編集内容を適応する" class="nav-link" data-scroll-target="#編集内容を適応する"><span class="toc-section-number">0.4.1</span>  編集内容を適応する</a></li>
+  <li><a href="#今後の運用" id="toc-今後の運用" class="nav-link" data-scroll-target="#今後の運用"><span class="toc-section-number">0.4.2</span>  今後の運用</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -198,7 +205,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">強化学習第2版 輪読会</h1>
+<h1 class="title d-none d-lg-block">強化学習 輪読会</h1>
 </div>
 
 
@@ -206,12 +213,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">November 29, 2022</p>
-    </div>
-  </div>
   
     
   </div>
@@ -220,14 +221,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>参加者: ろく、峻平</p>
-<section id="輪読会にあたって" class="level1 unnumbered">
-<h1 class="unnumbered">輪読会にあたって</h1>
+<section id="輪読会にあたって" class="level2" data-number="0.1">
+<h2 data-number="0.1" class="anchored" data-anchor-id="輪読会にあたって"><span class="header-section-number">0.1</span> 輪読会にあたって</h2>
 <p>第１章以降、とくに第Ⅱ部（第９章〜）からはそれぞれが独立した内容が多い。</p>
 <p>最初にすべての難易度を把握するのは難しいので、毎週次回の担当範囲を決めることとする。</p>
 <p>本の内容に沿って解説していき、わからないところがあれば聞き手はよこやりを入れて質問をしてよい。</p>
 <p>担当者はすべての質問に答えられるように準備する。</p>
-<section id="当書で使われる記号" class="level2">
-<h2 class="anchored" data-anchor-id="当書で使われる記号">当書で使われる記号</h2>
+</section>
+<section id="当書で使われる記号" class="level2" data-number="0.2">
+<h2 data-number="0.2" class="anchored" data-anchor-id="当書で使われる記号"><span class="header-section-number">0.2</span> 当書で使われる記号</h2>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
@@ -235,8 +237,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="今後の進め方" class="level2">
-<h2 class="anchored" data-anchor-id="今後の進め方">今後の進め方</h2>
+<section id="今後の進め方" class="level2" data-number="0.3">
+<h2 data-number="0.3" class="anchored" data-anchor-id="今後の進め方"><span class="header-section-number">0.3</span> 今後の進め方</h2>
 <p>二人で共通の文書を編集する形式に賛成であれば、次回までにこの文書をサーバーにアップロードし、峻平への導入方法を考えておく。</p>
 <table class="table">
 <thead>
@@ -280,6 +282,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 <p>そうでなければ、例えば一人はbook形式、もう一人はスライドを用いて発表する。</p>
+</section>
+<section id="文書の編集方法" class="level2" data-number="0.4">
+<h2 data-number="0.4" class="anchored" data-anchor-id="文書の編集方法"><span class="header-section-number">0.4</span> 文書の編集方法</h2>
+<ol type="1">
+<li>git環境を整える。（wslがおすすめ）</li>
+<li><a href="https://posit.co/download/rstudio-desktop/">rstudio</a>と<a href="https://quarto.org/docs/get-started/">quarto</a>をインストール</li>
+<li><a href="https://github.com/Roku-3/rindoku_RL" class="uri">https://github.com/Roku-3/rindoku_RL</a>にアクセスし、mainブランチでリポジトリをクローンする。rstudioで開く。</li>
+</ol>
+<section id="編集内容を適応する" class="level3" data-number="0.4.1">
+<h3 data-number="0.4.1" class="anchored" data-anchor-id="編集内容を適応する"><span class="header-section-number">0.4.1</span> 編集内容を適応する</h3>
+<p>gitの基本コマンドは以下の通り。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull origin HEAD            <span class="co"># githubからローカルに差分をもってくる</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .                       <span class="co"># 全てのファイルをコミット対象にする</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"edit chapter 2"</span>  <span class="co"># 編集内容を表すコメント付きでコミットする。</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                                <span class="co"># -mはコミットメッセージを一行にするという意味</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin HEAD            <span class="co"># githubに情報を送る</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>2人が同じ場所を変更していた場合、コンフリクトが発生する。その時は必ず解消してからpushを行う。</p>
+<p><code>git branch</code>と入力したときに<code>main</code>になっていることを確認してからpushすること。<br>
+pushが正常に行われると自動でデプロイ（サイトが公開）される。</p>
+</section>
+<section id="今後の運用" class="level3" data-number="0.4.2">
+<h3 data-number="0.4.2" class="anchored" data-anchor-id="今後の運用"><span class="header-section-number">0.4.2</span> 今後の運用</h3>
+<p>一人が文書を変更して適応した後、細かいミスなどで再編集するのは手間。また間違ってファイルを削除してしまった時の危険性も高い。</p>
+<p>そのため、後々はプルリクエストを出してもう一人が確認する形式にしようと思う。</p>
+<p>プルリクエストは手軽に人の編集を確認・訂正できるgithubの機能である。</p>
 
 
 </section>
@@ -424,7 +454,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./intro.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">序章のまとめ</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">序章のまとめ</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
