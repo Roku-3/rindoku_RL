@@ -5,13 +5,13 @@ execute:
   freeze: auto
 
 book:
-  title: "強化学習第2版 輪読会"
-  date: "2022/11/29"
+  title: "強化学習 輪読会"
   chapters:
     - index.qmd
     - intro.qmd
-    - summary.qmd
-    - references.qmd
+    - chapter1.qmd
+    - chapter2.qmd
+    - chapter3.qmd
 
 format:
   html:
