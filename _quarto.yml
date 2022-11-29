@@ -5,16 +5,13 @@ execute:
   freeze: auto
 
 book:
-  title: "rindoku"
-  author: "Jane Doe"
+  title: "強化学習第2版 輪読会"
   date: "2022/11/29"
   chapters:
     - index.qmd
     - intro.qmd
     - summary.qmd
     - references.qmd
-
-bibliography: references.bib
 
 format:
   html:
