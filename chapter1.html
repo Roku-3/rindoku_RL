@@ -125,7 +125,16 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#具体的な構成要素" id="toc-具体的な構成要素" class="nav-link active" data-scroll-target="#具体的な構成要素">具体的な構成要素</a></li>
+  <li><a href="#進化的手法との違い" id="toc-進化的手法との違い" class="nav-link" data-scroll-target="#進化的手法との違い">進化的手法との違い</a></li>
+  <li><a href="#シンプルな例三目並べ" id="toc-シンプルな例三目並べ" class="nav-link" data-scroll-target="#シンプルな例三目並べ">シンプルな例：三目並べ</a></li>
+  <li><a href="#練習問題" id="toc-練習問題" class="nav-link" data-scroll-target="#練習問題">練習問題</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -149,11 +158,377 @@ ul.task-list li input[type="checkbox"] {
 
 <p><strong>強化学習</strong>は機械学習の一種で、環境とエージェントの<strong>相互作用</strong>に注目した手法ある。</p>
 <p>教師あり/なし学習と違い、与えられた最適解（もしくは隠れた最適解）を探すのではなく、最も大きい報酬をもたらす行動を自分で見つけ出す。また、あるタイムステップでの行動はその時点での報酬だけではなく、その後の報酬にも影響を与える。よって、<strong>探索</strong>と<strong>遅延報酬</strong>という二つの特性を持つ。</p>
+<section id="具体的な構成要素" class="level2">
+<h2 class="anchored" data-anchor-id="具体的な構成要素">具体的な構成要素</h2>
+<table class="table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>方策(policy)</td>
+<td>ある状態でのそこからとるべき行動への写像</td>
+</tr>
+<tr class="even">
+<td>報酬(reward)</td>
+<td>各時間ステップごとの行動を評価して環境からエージェントに送られるもの。</td>
+</tr>
+<tr class="odd">
+<td>価値関数(value function)</td>
+<td>報酬とは違い、その状態の<strong>長期的な価値</strong>を導く。</td>
+</tr>
+<tr class="even">
+<td>モデル(model)</td>
+<td>環境の挙動を模倣する、主に未来の環境（状態遷移と報酬）を予測するための関数群。</td>
+</tr>
+</tbody>
+</table>
+<p>強化学習の最終目標はこの報酬を最大化することである。</p>
+<p>４つ目の環境モデルは必須要素ではなく、使用したものを<strong>モデルベース</strong>、していないものを<strong>モデルフリー</strong>手法と呼ぶ。</p>
+</section>
+<section id="進化的手法との違い" class="level2">
+<h2 class="anchored" data-anchor-id="進化的手法との違い">進化的手法との違い</h2>
+<p>（当書では別のものとして捉えているが、進化的手法を強化学習アルゴリズムの一派とする考え方もある。）</p>
+<p>遺伝的アルゴリズム、遺伝的プログラミング、焼きなまし法などを<strong>進化的</strong>手法と呼ぶ。これらは生物のように優れたエージェントの特徴を引き継いで次の世代が獲得する報酬を大きくする。</p>
+<p>環境からの情報をもとに行動し、報酬を最大化するという点で強化学習と似ているが、最初に述べた環境との相互作用がないという点で異なる。</p>
+<p>つまり、進化的手法ではどの状態でどの行動を取ったのか、という情報を使わない。エージェントが環境の状態を知覚しづらい（数値化が難しい）場合などを除いて、強化学習のほうが効率的に学習できることが多い。</p>
+</section>
+<section id="シンプルな例三目並べ" class="level2">
+<h2 class="anchored" data-anchor-id="シンプルな例三目並べ">シンプルな例：三目並べ</h2>
+<p>強化学習を用いて三目並べに勝つことを目標とするエージェントを作る。</p>
+<p>以下のような行動木を作成する。それぞれの状態（盤面）には0~1の価値が設定されている。どうやっても負ける状態には0、既に勝っている状態には1、それ以外には0.5が初期値として割り当てられる。</p>
+<p><img src="./images/1*4TqqW4ku7wmCX0vj-HT_xQ.png" class="img-fluid"></p>
+<p>学習中、基本的には価値が大きい、勝率が高い手を選ぶが、すべての状態を試すためにランダム性を持った行動選択（<strong>探索的な手</strong>）をさせる。</p>
+<p>状態の価値の更新は以下の式で行う。</p>
 <p><span class="math display">\[
-V(s) \leftarrow V(s)+\alpha\left[V\left(s^{\prime}\right)-V(s)\right]
+V(s_t) \leftarrow V(s_t)+\alpha\left[V\left(s_{t+1}\right)-V(s_t)\right]
 \]</span></p>
+<p><span class="math inline">\(V(s)\)</span>は状態<span class="math inline">\(s\)</span>の推定価値を表し、次の手を選択した際、次の状態の価値に近づけている。ステップサイズパラメータ<span class="math inline">\(\alpha\)</span>によって学習率を調整している。</p>
+<p>この更新則は<strong>TD学習</strong>（時間差分学習; temporal-difference learning）と呼ばれる。&nbsp;</p>
+</section>
+<section id="練習問題" class="level2">
+<h2 class="anchored" data-anchor-id="練習問題">練習問題</h2>
+<p>1.1 自己対戦（self play）</p>
+<pre><code>'''
+import numpy as np
+import pickle
+'''
+
+"""
+
+BOARD_ROWS = 3
+BOARD_COLS = 3
+BOARD_SIZE = BOARD_ROWS * BOARD_COLS
+
+class State:
+    def __init__(self):
+        self.data = np.zeros((BOARD_ROWS, BOARD_COLS))
+        self.winner = None
+        self.hashVal = None
+        self.end = None
+
+    def getHash(self):
+        if self.hashVal is None:
+            self.hashVal = 0
+            for i in self.data.reshape(BOARD_ROWS * BOARD_COLS):
+                if i == -1:
+                    i = 2
+                self.hashVal = self.hashVal * 3 + i
+        return int(self.hashVal)
+
+    def isEnd(self):
+        if self.end is not None:
+            return self.end
+        results = []
+        for i in range(0, BOARD_ROWS):
+            results.append(np.sum(self.data[i, :]))
+        for i in range(0, BOARD_COLS):
+            results.append(np.sum(self.data[:, i]))
+
+        results.append(0)
+        for i in range(0, BOARD_ROWS):
+            results[-1] += self.data[i, i]
+        results.append(0)
+        for i in range(0, BOARD_ROWS):
+            results[-1] += self.data[i, BOARD_ROWS - 1 - i]
+
+        for result in results:
+            if result == 3:
+                self.winner = 1
+                self.end = True
+                return self.end
+            if result == -3:
+                self.winner = -1
+                self.end = True
+                return self.end
+
+        sum = np.sum(np.abs(self.data))
+        if sum == BOARD_ROWS * BOARD_COLS:
+            self.winner = 0
+            self.end = True
+            return self.end
+
+        self.end = False
+        return self.end
+
+    def nextState(self, i, j, symbol):
+        newState = State()
+        newState.data = np.copy(self.data)
+        newState.data[i, j] = symbol
+        return newState
+
+    # print board
+    def show(self):
+        for i in range(0, BOARD_ROWS):
+            print('-------------')
+            out = '| '
+            for j in range(0, BOARD_COLS):
+                if self.data[i, j] == 1:
+                    token = '*'
+                if self.data[i, j] == 0:
+                    token = '0'
+                if self.data[i, j] == -1:
+                    token = 'x'
+                out += token + ' | '
+            print(out)
+        print('-------------')
+
+def getAllStatesImpl(currentState, currentSymbol, allStates):
+    for i in range(0, BOARD_ROWS):
+        for j in range(0, BOARD_COLS):
+            if currentState.data[i][j] == 0:
+                newState = currentState.nextState(i, j, currentSymbol)
+                newHash = newState.getHash()
+                if newHash not in allStates.keys():
+                    isEnd = newState.isEnd()
+                    allStates[newHash] = (newState, isEnd)
+                    if not isEnd:
+                        getAllStatesImpl(newState, -currentSymbol, allStates)
+
+def getAllStates():
+    currentSymbol = 1
+    currentState = State()
+    allStates = dict()
+    allStates[currentState.getHash()] = (currentState, currentState.isEnd())
+    getAllStatesImpl(currentState, currentSymbol, allStates)
+    return allStates
+
+allStates = getAllStates()
+
+class Judger:
+    def __init__(self, player1, player2, feedback=True):
+        self.p1 = player1
+        self.p2 = player2
+        self.feedback = feedback
+        self.currentPlayer = None
+        self.p1Symbol = 1
+        self.p2Symbol = -1
+        self.p1.setSymbol(self.p1Symbol)
+        self.p2.setSymbol(self.p2Symbol)
+        self.currentState = State()
+        self.allStates = allStates
+
+    def giveReward(self):
+        if self.currentState.winner == self.p1Symbol:
+            self.p1.feedReward(1)
+            self.p2.feedReward(0)
+        elif self.currentState.winner == self.p2Symbol:
+            self.p1.feedReward(0)
+            self.p2.feedReward(1)
+        else:
+            self.p1.feedReward(0.1)
+            self.p2.feedReward(0.5)
+
+    def feedCurrentState(self):
+        self.p1.feedState(self.currentState)
+        self.p2.feedState(self.currentState)
+
+    def reset(self):
+        self.p1.reset()
+        self.p2.reset()
+        self.currentState = State()
+        self.currentPlayer = None
+
+    def play(self, show=False):
+        self.reset()
+        self.feedCurrentState()
+        while True:
+            if self.currentPlayer == self.p1:
+                self.currentPlayer = self.p2
+            else:
+                self.currentPlayer = self.p1
+            if show:
+                self.currentState.show()
+            [i, j, symbol] = self.currentPlayer.takeAction()
+            self.currentState = self.currentState.nextState(i, j, symbol)
+            hashValue = self.currentState.getHash()
+            self.currentState, isEnd = self.allStates[hashValue]
+            self.feedCurrentState()
+            if isEnd:
+                if self.feedback:
+                    self.giveReward()
+                return self.currentState.winner
+
+# AI player
+class Player:
+    def __init__(self, stepSize = 0.1, exploreRate=0.1):
+        self.allStates = allStates
+        self.estimations = dict()
+        self.stepSize = stepSize
+        self.exploreRate = exploreRate
+        self.states = []
+
+    def reset(self):
+        self.states = []
+
+    def setSymbol(self, symbol):
+        self.symbol = symbol
+        for hash in self.allStates.keys():
+            (state, isEnd) = self.allStates[hash]
+            if isEnd:
+                if state.winner == self.symbol:
+                    self.estimations[hash] = 1.0
+                else:
+                    self.estimations[hash] = 0
+            else:
+                self.estimations[hash] = 0.5
+
+    def feedState(self, state):
+        self.states.append(state)
+
+    def feedReward(self, reward):
+        if len(self.states) == 0:
+            return
+        self.states = [state.getHash() for state in self.states]
+        target = reward
+        for latestState in reversed(self.states):
+            value = self.estimations[latestState] + self.stepSize * (target - self.estimations[latestState])
+            self.estimations[latestState] = value
+            target = value
+        self.states = []
+
+    def takeAction(self):
+        state = self.states[-1]
+        nextStates = []
+        nextPositions = []
+        for i in range(BOARD_ROWS):
+            for j in range(BOARD_COLS):
+                if state.data[i, j] == 0:
+                    nextPositions.append([i, j])
+                    nextStates.append(state.nextState(i, j, self.symbol).getHash())
+        if np.random.binomial(1, self.exploreRate):
+            np.random.shuffle(nextPositions)
+            self.states = []
+            action = nextPositions[0]
+            action.append(self.symbol)
+            return action
+
+        values = []
+        for hash, pos in zip(nextStates, nextPositions):
+            values.append((self.estimations[hash], pos))
+        np.random.shuffle(values)
+        values.sort(key=lambda x: x[0], reverse=True)
+        action = values[0][1]
+        action.append(self.symbol)
+        return action
+
+    def savePolicy(self):
+        fw = open('optimal_policy_' + str(self.symbol), 'wb')
+        pickle.dump(self.estimations, fw)
+        fw.close()
+
+    def loadPolicy(self):
+        fr = open('optimal_policy_' + str(self.symbol),'rb')
+        self.estimations = pickle.load(fr)
+        fr.close()
+        
+# | 1 | 2 | 3 |
+# | 4 | 5 | 6 |
+# | 7 | 8 | 9 |
+class HumanPlayer:
+    def __init__(self, stepSize = 0.1, exploreRate=0.1):
+        self.symbol = None
+        self.currentState = None
+        return
+    def reset(self):
+        return
+    def setSymbol(self, symbol):
+        self.symbol = symbol
+        return
+    def feedState(self, state):
+        self.currentState = state
+        return
+    def feedReward(self, reward):
+        return
+    def takeAction(self):
+        data = int(input("Input your position:"))
+        data -= 1
+        i = data // int(BOARD_COLS)
+        j = data % BOARD_COLS
+        if self.currentState.data[i, j] != 0:
+            return self.takeAction()
+        return (i, j, self.symbol)
+
+def train(epochs=20000):
+    player1 = Player()
+    player2 = Player()
+    judger = Judger(player1, player2)
+    player1Win = 0.0
+    player2Win = 0.0
+    for i in range(0, epochs):
+        print("Epoch", i)
+        winner = judger.play()
+        if winner == 1:
+            player1Win += 1
+        if winner == -1:
+            player2Win += 1
+        judger.reset()
+    print(player1Win / epochs)
+    print(player2Win / epochs)
+    player1.savePolicy()
+    player2.savePolicy()
+
+def compete(turns=500):
+    player1 = Player(exploreRate=0)
+    player2 = Player(exploreRate=0)
+    judger = Judger(player1, player2, False)
+    player1.loadPolicy()
+    player2.loadPolicy()
+    player1Win = 0.0
+    player2Win = 0.0
+    for i in range(0, turns):
+        print("Epoch", i)
+        winner = judger.play()
+        if winner == 1:
+            player1Win += 1
+        if winner == -1:
+            player2Win += 1
+        judger.reset()
+    print(player1Win / turns)
+    print(player2Win / turns)
+
+def play():
+    while True:
+        player1 = Player(exploreRate=0)
+        player2 = HumanPlayer()
+        judger = Judger(player1, player2, False)
+        player1.loadPolicy()
+        winner = judger.play(True)
+        if winner == player2.symbol:
+            print("Win!")
+        elif winner == player1.symbol:
+            print("Lose!")
+        else:
+            print("Tie!")
+
+train()
+compete()
+play()
+"""</code></pre>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
