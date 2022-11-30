@@ -20,6 +20,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -162,8 +225,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="具体的な構成要素">具体的な構成要素</h2>
 <table class="table">
 <colgroup>
-<col style="width: 34%">
-<col style="width: 65%">
+<col style="width: 35%">
+<col style="width: 64%">
 </colgroup>
 <tbody>
 <tr class="odd">
@@ -210,322 +273,335 @@ V(s_t) \leftarrow V(s_t)+\alpha\left[V\left(s_{t+1}\right)-V(s_t)\right]
 <section id="練習問題" class="level2">
 <h2 class="anchored" data-anchor-id="練習問題">練習問題</h2>
 <p>1.1 自己対戦（self play）</p>
-<pre><code>'''
-import numpy as np
-import pickle
-'''
-
-"""
-
-BOARD_ROWS = 3
-BOARD_COLS = 3
-BOARD_SIZE = BOARD_ROWS * BOARD_COLS
-
-class State:
-    def __init__(self):
-        self.data = np.zeros((BOARD_ROWS, BOARD_COLS))
-        self.winner = None
-        self.hashVal = None
-        self.end = None
-
-    def getHash(self):
-        if self.hashVal is None:
-            self.hashVal = 0
-            for i in self.data.reshape(BOARD_ROWS * BOARD_COLS):
-                if i == -1:
-                    i = 2
-                self.hashVal = self.hashVal * 3 + i
-        return int(self.hashVal)
-
-    def isEnd(self):
-        if self.end is not None:
-            return self.end
-        results = []
-        for i in range(0, BOARD_ROWS):
-            results.append(np.sum(self.data[i, :]))
-        for i in range(0, BOARD_COLS):
-            results.append(np.sum(self.data[:, i]))
-
-        results.append(0)
-        for i in range(0, BOARD_ROWS):
-            results[-1] += self.data[i, i]
-        results.append(0)
-        for i in range(0, BOARD_ROWS):
-            results[-1] += self.data[i, BOARD_ROWS - 1 - i]
-
-        for result in results:
-            if result == 3:
-                self.winner = 1
-                self.end = True
-                return self.end
-            if result == -3:
-                self.winner = -1
-                self.end = True
-                return self.end
-
-        sum = np.sum(np.abs(self.data))
-        if sum == BOARD_ROWS * BOARD_COLS:
-            self.winner = 0
-            self.end = True
-            return self.end
-
-        self.end = False
-        return self.end
-
-    def nextState(self, i, j, symbol):
-        newState = State()
-        newState.data = np.copy(self.data)
-        newState.data[i, j] = symbol
-        return newState
-
-    # print board
-    def show(self):
-        for i in range(0, BOARD_ROWS):
-            print('-------------')
-            out = '| '
-            for j in range(0, BOARD_COLS):
-                if self.data[i, j] == 1:
-                    token = '*'
-                if self.data[i, j] == 0:
-                    token = '0'
-                if self.data[i, j] == -1:
-                    token = 'x'
-                out += token + ' | '
-            print(out)
-        print('-------------')
-
-def getAllStatesImpl(currentState, currentSymbol, allStates):
-    for i in range(0, BOARD_ROWS):
-        for j in range(0, BOARD_COLS):
-            if currentState.data[i][j] == 0:
-                newState = currentState.nextState(i, j, currentSymbol)
-                newHash = newState.getHash()
-                if newHash not in allStates.keys():
-                    isEnd = newState.isEnd()
-                    allStates[newHash] = (newState, isEnd)
-                    if not isEnd:
-                        getAllStatesImpl(newState, -currentSymbol, allStates)
-
-def getAllStates():
-    currentSymbol = 1
-    currentState = State()
-    allStates = dict()
-    allStates[currentState.getHash()] = (currentState, currentState.isEnd())
-    getAllStatesImpl(currentState, currentSymbol, allStates)
-    return allStates
-
-allStates = getAllStates()
-
-class Judger:
-    def __init__(self, player1, player2, feedback=True):
-        self.p1 = player1
-        self.p2 = player2
-        self.feedback = feedback
-        self.currentPlayer = None
-        self.p1Symbol = 1
-        self.p2Symbol = -1
-        self.p1.setSymbol(self.p1Symbol)
-        self.p2.setSymbol(self.p2Symbol)
-        self.currentState = State()
-        self.allStates = allStates
-
-    def giveReward(self):
-        if self.currentState.winner == self.p1Symbol:
-            self.p1.feedReward(1)
-            self.p2.feedReward(0)
-        elif self.currentState.winner == self.p2Symbol:
-            self.p1.feedReward(0)
-            self.p2.feedReward(1)
-        else:
-            self.p1.feedReward(0.1)
-            self.p2.feedReward(0.5)
-
-    def feedCurrentState(self):
-        self.p1.feedState(self.currentState)
-        self.p2.feedState(self.currentState)
-
-    def reset(self):
-        self.p1.reset()
-        self.p2.reset()
-        self.currentState = State()
-        self.currentPlayer = None
-
-    def play(self, show=False):
-        self.reset()
-        self.feedCurrentState()
-        while True:
-            if self.currentPlayer == self.p1:
-                self.currentPlayer = self.p2
-            else:
-                self.currentPlayer = self.p1
-            if show:
-                self.currentState.show()
-            [i, j, symbol] = self.currentPlayer.takeAction()
-            self.currentState = self.currentState.nextState(i, j, symbol)
-            hashValue = self.currentState.getHash()
-            self.currentState, isEnd = self.allStates[hashValue]
-            self.feedCurrentState()
-            if isEnd:
-                if self.feedback:
-                    self.giveReward()
-                return self.currentState.winner
-
-# AI player
-class Player:
-    def __init__(self, stepSize = 0.1, exploreRate=0.1):
-        self.allStates = allStates
-        self.estimations = dict()
-        self.stepSize = stepSize
-        self.exploreRate = exploreRate
-        self.states = []
-
-    def reset(self):
-        self.states = []
-
-    def setSymbol(self, symbol):
-        self.symbol = symbol
-        for hash in self.allStates.keys():
-            (state, isEnd) = self.allStates[hash]
-            if isEnd:
-                if state.winner == self.symbol:
-                    self.estimations[hash] = 1.0
-                else:
-                    self.estimations[hash] = 0
-            else:
-                self.estimations[hash] = 0.5
-
-    def feedState(self, state):
-        self.states.append(state)
-
-    def feedReward(self, reward):
-        if len(self.states) == 0:
-            return
-        self.states = [state.getHash() for state in self.states]
-        target = reward
-        for latestState in reversed(self.states):
-            value = self.estimations[latestState] + self.stepSize * (target - self.estimations[latestState])
-            self.estimations[latestState] = value
-            target = value
-        self.states = []
-
-    def takeAction(self):
-        state = self.states[-1]
-        nextStates = []
-        nextPositions = []
-        for i in range(BOARD_ROWS):
-            for j in range(BOARD_COLS):
-                if state.data[i, j] == 0:
-                    nextPositions.append([i, j])
-                    nextStates.append(state.nextState(i, j, self.symbol).getHash())
-        if np.random.binomial(1, self.exploreRate):
-            np.random.shuffle(nextPositions)
-            self.states = []
-            action = nextPositions[0]
-            action.append(self.symbol)
-            return action
-
-        values = []
-        for hash, pos in zip(nextStates, nextPositions):
-            values.append((self.estimations[hash], pos))
-        np.random.shuffle(values)
-        values.sort(key=lambda x: x[0], reverse=True)
-        action = values[0][1]
-        action.append(self.symbol)
-        return action
-
-    def savePolicy(self):
-        fw = open('optimal_policy_' + str(self.symbol), 'wb')
-        pickle.dump(self.estimations, fw)
-        fw.close()
-
-    def loadPolicy(self):
-        fr = open('optimal_policy_' + str(self.symbol),'rb')
-        self.estimations = pickle.load(fr)
-        fr.close()
-        
-# | 1 | 2 | 3 |
-# | 4 | 5 | 6 |
-# | 7 | 8 | 9 |
-class HumanPlayer:
-    def __init__(self, stepSize = 0.1, exploreRate=0.1):
-        self.symbol = None
-        self.currentState = None
-        return
-    def reset(self):
-        return
-    def setSymbol(self, symbol):
-        self.symbol = symbol
-        return
-    def feedState(self, state):
-        self.currentState = state
-        return
-    def feedReward(self, reward):
-        return
-    def takeAction(self):
-        data = int(input("Input your position:"))
-        data -= 1
-        i = data // int(BOARD_COLS)
-        j = data % BOARD_COLS
-        if self.currentState.data[i, j] != 0:
-            return self.takeAction()
-        return (i, j, self.symbol)
-
-def train(epochs=20000):
-    player1 = Player()
-    player2 = Player()
-    judger = Judger(player1, player2)
-    player1Win = 0.0
-    player2Win = 0.0
-    for i in range(0, epochs):
-        print("Epoch", i)
-        winner = judger.play()
-        if winner == 1:
-            player1Win += 1
-        if winner == -1:
-            player2Win += 1
-        judger.reset()
-    print(player1Win / epochs)
-    print(player2Win / epochs)
-    player1.savePolicy()
-    player2.savePolicy()
-
-def compete(turns=500):
-    player1 = Player(exploreRate=0)
-    player2 = Player(exploreRate=0)
-    judger = Judger(player1, player2, False)
-    player1.loadPolicy()
-    player2.loadPolicy()
-    player1Win = 0.0
-    player2Win = 0.0
-    for i in range(0, turns):
-        print("Epoch", i)
-        winner = judger.play()
-        if winner == 1:
-            player1Win += 1
-        if winner == -1:
-            player2Win += 1
-        judger.reset()
-    print(player1Win / turns)
-    print(player2Win / turns)
-
-def play():
-    while True:
-        player1 = Player(exploreRate=0)
-        player2 = HumanPlayer()
-        judger = Judger(player1, player2, False)
-        player1.loadPolicy()
-        winner = judger.play(True)
-        if winner == player2.symbol:
-            print("Win!")
-        elif winner == player1.symbol:
-            print("Lose!")
-        else:
-            print("Tie!")
-
-train()
-compete()
-play()
-"""</code></pre>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    import numpy as np</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">    import pickle</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>'\nimport numpy as np\nimport pickle\n'</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    BOARD_ROWS = 3</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    BOARD_COLS = 3</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    BOARD_SIZE = BOARD_ROWS * BOARD_COLS</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    class State:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">        def __init__(self):</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">            self.data = np.zeros((BOARD_ROWS, BOARD_COLS))</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">            self.winner = None</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">            self.hashVal = None</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">            self.end = None</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">        def getHash(self):</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">            if self.hashVal is None:</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">                self.hashVal = 0</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">                for i in self.data.reshape(BOARD_ROWS * BOARD_COLS):</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">                    if i == -1:</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">                        i = 2</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.hashVal = self.hashVal * 3 + i</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">            return int(self.hashVal)</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">        def isEnd(self):</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">            if self.end is not None:</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">                return self.end</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">            results = []</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">            for i in range(0, BOARD_ROWS):</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">                results.append(np.sum(self.data[i, :]))</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">            for i in range(0, BOARD_COLS):</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">                results.append(np.sum(self.data[:, i]))</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">            results.append(0)</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">            for i in range(0, BOARD_ROWS):</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">                results[-1] += self.data[i, i]</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">            results.append(0)</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">            for i in range(0, BOARD_ROWS):</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">                results[-1] += self.data[i, BOARD_ROWS - 1 - i]</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co">            for result in results:</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co">                if result == 3:</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.winner = 1</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.end = True</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co">                    return self.end</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co">                if result == -3:</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.winner = -1</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.end = True</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co">                    return self.end</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co">            sum = np.sum(np.abs(self.data))</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co">            if sum == BOARD_ROWS * BOARD_COLS:</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co">                self.winner = 0</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="co">                self.end = True</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co">                return self.end</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co">            self.end = False</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">            return self.end</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">        def nextState(self, i, j, symbol):</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co">            newState = State()</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="co">            newState.data = np.copy(self.data)</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="co">            newState.data[i, j] = symbol</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="co">            return newState</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="co">        # print board</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="co">        def show(self):</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co">            for i in range(0, BOARD_ROWS):</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co">                print('-------------')</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co">                out = '| '</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co">                for j in range(0, BOARD_COLS):</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="co">                    if self.data[i, j] == 1:</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="co">                        token = '*'</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co">                    if self.data[i, j] == 0:</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="co">                        token = '0'</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="co">                    if self.data[i, j] == -1:</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co">                        token = 'x'</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="co">                    out += token + ' | '</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">                print(out)</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co">            print('-------------')</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="co">    def getAllStatesImpl(currentState, currentSymbol, allStates):</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="co">        for i in range(0, BOARD_ROWS):</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="co">            for j in range(0, BOARD_COLS):</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="co">                if currentState.data[i][j] == 0:</span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="co">                    newState = currentState.nextState(i, j, currentSymbol)</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="co">                    newHash = newState.getHash()</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co">                    if newHash not in allStates.keys():</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="co">                        isEnd = newState.isEnd()</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="co">                        allStates[newHash] = (newState, isEnd)</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="co">                        if not isEnd:</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="co">                            getAllStatesImpl(newState, -currentSymbol, allStates)</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="co">    def getAllStates():</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co">        currentSymbol = 1</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co">        currentState = State()</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="co">        allStates = dict()</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="co">        allStates[currentState.getHash()] = (currentState, currentState.isEnd())</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="co">        getAllStatesImpl(currentState, currentSymbol, allStates)</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co">        return allStates</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="co">    allStates = getAllStates()</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co">    class Judger:</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="co">        def __init__(self, player1, player2, feedback=True):</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p1 = player1</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p2 = player2</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="co">            self.feedback = feedback</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co">            self.currentPlayer = None</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p1Symbol = 1</span></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p2Symbol = -1</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p1.setSymbol(self.p1Symbol)</span></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p2.setSymbol(self.p2Symbol)</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="co">            self.currentState = State()</span></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="co">            self.allStates = allStates</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="co">        def giveReward(self):</span></span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a><span class="co">            if self.currentState.winner == self.p1Symbol:</span></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="co">                self.p1.feedReward(1)</span></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="co">                self.p2.feedReward(0)</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="co">            elif self.currentState.winner == self.p2Symbol:</span></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a><span class="co">                self.p1.feedReward(0)</span></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a><span class="co">                self.p2.feedReward(1)</span></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a><span class="co">            else:</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="co">                self.p1.feedReward(0.1)</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a><span class="co">                self.p2.feedReward(0.5)</span></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="co">        def feedCurrentState(self):</span></span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p1.feedState(self.currentState)</span></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p2.feedState(self.currentState)</span></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a><span class="co">        def reset(self):</span></span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p1.reset()</span></span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a><span class="co">            self.p2.reset()</span></span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a><span class="co">            self.currentState = State()</span></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a><span class="co">            self.currentPlayer = None</span></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a><span class="co">        def play(self, show=False):</span></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="co">            self.reset()</span></span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a><span class="co">            self.feedCurrentState()</span></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="co">            while True:</span></span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a><span class="co">                if self.currentPlayer == self.p1:</span></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.currentPlayer = self.p2</span></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a><span class="co">                else:</span></span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.currentPlayer = self.p1</span></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="co">                if show:</span></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.currentState.show()</span></span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a><span class="co">                [i, j, symbol] = self.currentPlayer.takeAction()</span></span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a><span class="co">                self.currentState = self.currentState.nextState(i, j, symbol)</span></span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a><span class="co">                hashValue = self.currentState.getHash()</span></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a><span class="co">                self.currentState, isEnd = self.allStates[hashValue]</span></span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a><span class="co">                self.feedCurrentState()</span></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="co">                if isEnd:</span></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a><span class="co">                    if self.feedback:</span></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a><span class="co">                        self.giveReward()</span></span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a><span class="co">                    return self.currentState.winner</span></span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a><span class="co">    # AI player</span></span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a><span class="co">    class Player:</span></span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a><span class="co">        def __init__(self, stepSize = 0.1, exploreRate=0.1):</span></span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a><span class="co">            self.allStates = allStates</span></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a><span class="co">            self.estimations = dict()</span></span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a><span class="co">            self.stepSize = stepSize</span></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a><span class="co">            self.exploreRate = exploreRate</span></span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a><span class="co">            self.states = []</span></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a><span class="co">        def reset(self):</span></span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="co">            self.states = []</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a><span class="co">        def setSymbol(self, symbol):</span></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a><span class="co">            self.symbol = symbol</span></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="co">            for hash in self.allStates.keys():</span></span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="co">                (state, isEnd) = self.allStates[hash]</span></span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="co">                if isEnd:</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="co">                    if state.winner == self.symbol:</span></span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a><span class="co">                        self.estimations[hash] = 1.0</span></span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a><span class="co">                    else:</span></span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a><span class="co">                        self.estimations[hash] = 0</span></span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a><span class="co">                else:</span></span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a><span class="co">                    self.estimations[hash] = 0.5</span></span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a><span class="co">        def feedState(self, state):</span></span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a><span class="co">            self.states.append(state)</span></span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a><span class="co">        def feedReward(self, reward):</span></span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a><span class="co">            if len(self.states) == 0:</span></span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a><span class="co">                return</span></span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a><span class="co">            self.states = [state.getHash() for state in self.states]</span></span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a><span class="co">            target = reward</span></span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a><span class="co">            for latestState in reversed(self.states):</span></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a><span class="co">                value = self.estimations[latestState] + self.stepSize * (target - self.estimations[latestState])</span></span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a><span class="co">                self.estimations[latestState] = value</span></span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a><span class="co">                target = value</span></span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a><span class="co">            self.states = []</span></span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a><span class="co">        def takeAction(self):</span></span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a><span class="co">            state = self.states[-1]</span></span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a><span class="co">            nextStates = []</span></span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a><span class="co">            nextPositions = []</span></span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a><span class="co">            for i in range(BOARD_ROWS):</span></span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a><span class="co">                for j in range(BOARD_COLS):</span></span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a><span class="co">                    if state.data[i, j] == 0:</span></span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a><span class="co">                        nextPositions.append([i, j])</span></span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a><span class="co">                        nextStates.append(state.nextState(i, j, self.symbol).getHash())</span></span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a><span class="co">            if np.random.binomial(1, self.exploreRate):</span></span>
+<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a><span class="co">                np.random.shuffle(nextPositions)</span></span>
+<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a><span class="co">                self.states = []</span></span>
+<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a><span class="co">                action = nextPositions[0]</span></span>
+<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a><span class="co">                action.append(self.symbol)</span></span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a><span class="co">                return action</span></span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a><span class="co">            values = []</span></span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a><span class="co">            for hash, pos in zip(nextStates, nextPositions):</span></span>
+<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a><span class="co">                values.append((self.estimations[hash], pos))</span></span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a><span class="co">            np.random.shuffle(values)</span></span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a><span class="co">            values.sort(key=lambda x: x[0], reverse=True)</span></span>
+<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a><span class="co">            action = values[0][1]</span></span>
+<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a><span class="co">            action.append(self.symbol)</span></span>
+<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a><span class="co">            return action</span></span>
+<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a><span class="co">        def savePolicy(self):</span></span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a><span class="co">            fw = open('optimal_policy_' + str(self.symbol), 'wb')</span></span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a><span class="co">            pickle.dump(self.estimations, fw)</span></span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a><span class="co">            fw.close()</span></span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a><span class="co">        def loadPolicy(self):</span></span>
+<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a><span class="co">            fr = open('optimal_policy_' + str(self.symbol),'rb')</span></span>
+<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a><span class="co">            self.estimations = pickle.load(fr)</span></span>
+<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a><span class="co">            fr.close()</span></span>
+<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a><span class="co">            </span></span>
+<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a><span class="co">    # | 1 | 2 | 3 |</span></span>
+<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a><span class="co">    # | 4 | 5 | 6 |</span></span>
+<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a><span class="co">    # | 7 | 8 | 9 |</span></span>
+<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a><span class="co">    class HumanPlayer:</span></span>
+<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a><span class="co">        def __init__(self, stepSize = 0.1, exploreRate=0.1):</span></span>
+<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a><span class="co">            self.symbol = None</span></span>
+<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a><span class="co">            self.currentState = None</span></span>
+<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a><span class="co">            return</span></span>
+<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a><span class="co">        def reset(self):</span></span>
+<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a><span class="co">            return</span></span>
+<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a><span class="co">        def setSymbol(self, symbol):</span></span>
+<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a><span class="co">            self.symbol = symbol</span></span>
+<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a><span class="co">            return</span></span>
+<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a><span class="co">        def feedState(self, state):</span></span>
+<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a><span class="co">            self.currentState = state</span></span>
+<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a><span class="co">            return</span></span>
+<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a><span class="co">        def feedReward(self, reward):</span></span>
+<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a><span class="co">            return</span></span>
+<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a><span class="co">        def takeAction(self):</span></span>
+<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a><span class="co">            data = int(input("Input your position:"))</span></span>
+<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a><span class="co">            data -= 1</span></span>
+<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a><span class="co">            i = data // int(BOARD_COLS)</span></span>
+<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a><span class="co">            j = data % BOARD_COLS</span></span>
+<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a><span class="co">            if self.currentState.data[i, j] != 0:</span></span>
+<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a><span class="co">                return self.takeAction()</span></span>
+<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a><span class="co">            return (i, j, self.symbol)</span></span>
+<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a><span class="co">    def train(epochs=20000):</span></span>
+<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a><span class="co">        player1 = Player()</span></span>
+<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a><span class="co">        player2 = Player()</span></span>
+<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a><span class="co">        judger = Judger(player1, player2)</span></span>
+<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a><span class="co">        player1Win = 0.0</span></span>
+<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a><span class="co">        player2Win = 0.0</span></span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a><span class="co">        for i in range(0, epochs):</span></span>
+<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a><span class="co">            print("Epoch", i)</span></span>
+<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a><span class="co">            winner = judger.play()</span></span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a><span class="co">            if winner == 1:</span></span>
+<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a><span class="co">                player1Win += 1</span></span>
+<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a><span class="co">            if winner == -1:</span></span>
+<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a><span class="co">                player2Win += 1</span></span>
+<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a><span class="co">            judger.reset()</span></span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a><span class="co">        print(player1Win / epochs)</span></span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a><span class="co">        print(player2Win / epochs)</span></span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a><span class="co">        player1.savePolicy()</span></span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a><span class="co">        player2.savePolicy()</span></span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a><span class="co">    def compete(turns=500):</span></span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a><span class="co">        player1 = Player(exploreRate=0)</span></span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a><span class="co">        player2 = Player(exploreRate=0)</span></span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a><span class="co">        judger = Judger(player1, player2, False)</span></span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a><span class="co">        player1.loadPolicy()</span></span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a><span class="co">        player2.loadPolicy()</span></span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a><span class="co">        player1Win = 0.0</span></span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a><span class="co">        player2Win = 0.0</span></span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a><span class="co">        for i in range(0, turns):</span></span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a><span class="co">            print("Epoch", i)</span></span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a><span class="co">            winner = judger.play()</span></span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a><span class="co">            if winner == 1:</span></span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a><span class="co">                player1Win += 1</span></span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a><span class="co">            if winner == -1:</span></span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a><span class="co">                player2Win += 1</span></span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a><span class="co">            judger.reset()</span></span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a><span class="co">        print(player1Win / turns)</span></span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a><span class="co">        print(player2Win / turns)</span></span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a><span class="co">    def play():</span></span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a><span class="co">        while True:</span></span>
+<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a><span class="co">            player1 = Player(exploreRate=0)</span></span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a><span class="co">            player2 = HumanPlayer()</span></span>
+<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a><span class="co">            judger = Judger(player1, player2, False)</span></span>
+<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a><span class="co">            player1.loadPolicy()</span></span>
+<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a><span class="co">            winner = judger.play(True)</span></span>
+<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a><span class="co">            if winner == player2.symbol:</span></span>
+<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a><span class="co">                print("Win!")</span></span>
+<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a><span class="co">            elif winner == player1.symbol:</span></span>
+<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a><span class="co">                print("Lose!")</span></span>
+<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a><span class="co">            else:</span></span>
+<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a><span class="co">                print("Tie!")</span></span>
+<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a><span class="co">    train()</span></span>
+<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a><span class="co">    compete()</span></span>
+<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a><span class="co">    play()</span></span>
+<span id="cb3-312"><a href="#cb3-312" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-313"><a href="#cb3-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>'\n\nBOARD_ROWS = 3\nBOARD_COLS = 3\nBOARD_SIZE = BOARD_ROWS * BOARD_COLS\n\nclass State:\n    def __init__(self):\n        self.data = np.zeros((BOARD_ROWS, BOARD_COLS))\n        self.winner = None\n        self.hashVal = None\n        self.end = None\n\n    def getHash(self):\n        if self.hashVal is None:\n            self.hashVal = 0\n            for i in self.data.reshape(BOARD_ROWS * BOARD_COLS):\n                if i == -1:\n                    i = 2\n                self.hashVal = self.hashVal * 3 + i\n        return int(self.hashVal)\n\n    def isEnd(self):\n        if self.end is not None:\n            return self.end\n        results = []\n        for i in range(0, BOARD_ROWS):\n            results.append(np.sum(self.data[i, :]))\n        for i in range(0, BOARD_COLS):\n            results.append(np.sum(self.data[:, i]))\n\n        results.append(0)\n        for i in range(0, BOARD_ROWS):\n            results[-1] += self.data[i, i]\n        results.append(0)\n        for i in range(0, BOARD_ROWS):\n            results[-1] += self.data[i, BOARD_ROWS - 1 - i]\n\n        for result in results:\n            if result == 3:\n                self.winner = 1\n                self.end = True\n                return self.end\n            if result == -3:\n                self.winner = -1\n                self.end = True\n                return self.end\n\n        sum = np.sum(np.abs(self.data))\n        if sum == BOARD_ROWS * BOARD_COLS:\n            self.winner = 0\n            self.end = True\n            return self.end\n\n        self.end = False\n        return self.end\n\n    def nextState(self, i, j, symbol):\n        newState = State()\n        newState.data = np.copy(self.data)\n        newState.data[i, j] = symbol\n        return newState\n\n    # print board\n    def show(self):\n        for i in range(0, BOARD_ROWS):\n            print(\'-------------\')\n            out = \'| \'\n            for j in range(0, BOARD_COLS):\n                if self.data[i, j] == 1:\n                    token = \'*\'\n                if self.data[i, j] == 0:\n                    token = \'0\'\n                if self.data[i, j] == -1:\n                    token = \'x\'\n                out += token + \' | \'\n            print(out)\n        print(\'-------------\')\n\ndef getAllStatesImpl(currentState, currentSymbol, allStates):\n    for i in range(0, BOARD_ROWS):\n        for j in range(0, BOARD_COLS):\n            if currentState.data[i][j] == 0:\n                newState = currentState.nextState(i, j, currentSymbol)\n                newHash = newState.getHash()\n                if newHash not in allStates.keys():\n                    isEnd = newState.isEnd()\n                    allStates[newHash] = (newState, isEnd)\n                    if not isEnd:\n                        getAllStatesImpl(newState, -currentSymbol, allStates)\n\ndef getAllStates():\n    currentSymbol = 1\n    currentState = State()\n    allStates = dict()\n    allStates[currentState.getHash()] = (currentState, currentState.isEnd())\n    getAllStatesImpl(currentState, currentSymbol, allStates)\n    return allStates\n\nallStates = getAllStates()\n\nclass Judger:\n    def __init__(self, player1, player2, feedback=True):\n        self.p1 = player1\n        self.p2 = player2\n        self.feedback = feedback\n        self.currentPlayer = None\n        self.p1Symbol = 1\n        self.p2Symbol = -1\n        self.p1.setSymbol(self.p1Symbol)\n        self.p2.setSymbol(self.p2Symbol)\n        self.currentState = State()\n        self.allStates = allStates\n\n    def giveReward(self):\n        if self.currentState.winner == self.p1Symbol:\n            self.p1.feedReward(1)\n            self.p2.feedReward(0)\n        elif self.currentState.winner == self.p2Symbol:\n            self.p1.feedReward(0)\n            self.p2.feedReward(1)\n        else:\n            self.p1.feedReward(0.1)\n            self.p2.feedReward(0.5)\n\n    def feedCurrentState(self):\n        self.p1.feedState(self.currentState)\n        self.p2.feedState(self.currentState)\n\n    def reset(self):\n        self.p1.reset()\n        self.p2.reset()\n        self.currentState = State()\n        self.currentPlayer = None\n\n    def play(self, show=False):\n        self.reset()\n        self.feedCurrentState()\n        while True:\n            if self.currentPlayer == self.p1:\n                self.currentPlayer = self.p2\n            else:\n                self.currentPlayer = self.p1\n            if show:\n                self.currentState.show()\n            [i, j, symbol] = self.currentPlayer.takeAction()\n            self.currentState = self.currentState.nextState(i, j, symbol)\n            hashValue = self.currentState.getHash()\n            self.currentState, isEnd = self.allStates[hashValue]\n            self.feedCurrentState()\n            if isEnd:\n                if self.feedback:\n                    self.giveReward()\n                return self.currentState.winner\n\n# AI player\nclass Player:\n    def __init__(self, stepSize = 0.1, exploreRate=0.1):\n        self.allStates = allStates\n        self.estimations = dict()\n        self.stepSize = stepSize\n        self.exploreRate = exploreRate\n        self.states = []\n\n    def reset(self):\n        self.states = []\n\n    def setSymbol(self, symbol):\n        self.symbol = symbol\n        for hash in self.allStates.keys():\n            (state, isEnd) = self.allStates[hash]\n            if isEnd:\n                if state.winner == self.symbol:\n                    self.estimations[hash] = 1.0\n                else:\n                    self.estimations[hash] = 0\n            else:\n                self.estimations[hash] = 0.5\n\n    def feedState(self, state):\n        self.states.append(state)\n\n    def feedReward(self, reward):\n        if len(self.states) == 0:\n            return\n        self.states = [state.getHash() for state in self.states]\n        target = reward\n        for latestState in reversed(self.states):\n            value = self.estimations[latestState] + self.stepSize * (target - self.estimations[latestState])\n            self.estimations[latestState] = value\n            target = value\n        self.states = []\n\n    def takeAction(self):\n        state = self.states[-1]\n        nextStates = []\n        nextPositions = []\n        for i in range(BOARD_ROWS):\n            for j in range(BOARD_COLS):\n                if state.data[i, j] == 0:\n                    nextPositions.append([i, j])\n                    nextStates.append(state.nextState(i, j, self.symbol).getHash())\n        if np.random.binomial(1, self.exploreRate):\n            np.random.shuffle(nextPositions)\n            self.states = []\n            action = nextPositions[0]\n            action.append(self.symbol)\n            return action\n\n        values = []\n        for hash, pos in zip(nextStates, nextPositions):\n            values.append((self.estimations[hash], pos))\n        np.random.shuffle(values)\n        values.sort(key=lambda x: x[0], reverse=True)\n        action = values[0][1]\n        action.append(self.symbol)\n        return action\n\n    def savePolicy(self):\n        fw = open(\'optimal_policy_\' + str(self.symbol), \'wb\')\n        pickle.dump(self.estimations, fw)\n        fw.close()\n\n    def loadPolicy(self):\n        fr = open(\'optimal_policy_\' + str(self.symbol),\'rb\')\n        self.estimations = pickle.load(fr)\n        fr.close()\n        \n# | 1 | 2 | 3 |\n# | 4 | 5 | 6 |\n# | 7 | 8 | 9 |\nclass HumanPlayer:\n    def __init__(self, stepSize = 0.1, exploreRate=0.1):\n        self.symbol = None\n        self.currentState = None\n        return\n    def reset(self):\n        return\n    def setSymbol(self, symbol):\n        self.symbol = symbol\n        return\n    def feedState(self, state):\n        self.currentState = state\n        return\n    def feedReward(self, reward):\n        return\n    def takeAction(self):\n        data = int(input("Input your position:"))\n        data -= 1\n        i = data // int(BOARD_COLS)\n        j = data % BOARD_COLS\n        if self.currentState.data[i, j] != 0:\n            return self.takeAction()\n        return (i, j, self.symbol)\n\ndef train(epochs=20000):\n    player1 = Player()\n    player2 = Player()\n    judger = Judger(player1, player2)\n    player1Win = 0.0\n    player2Win = 0.0\n    for i in range(0, epochs):\n        print("Epoch", i)\n        winner = judger.play()\n        if winner == 1:\n            player1Win += 1\n        if winner == -1:\n            player2Win += 1\n        judger.reset()\n    print(player1Win / epochs)\n    print(player2Win / epochs)\n    player1.savePolicy()\n    player2.savePolicy()\n\ndef compete(turns=500):\n    player1 = Player(exploreRate=0)\n    player2 = Player(exploreRate=0)\n    judger = Judger(player1, player2, False)\n    player1.loadPolicy()\n    player2.loadPolicy()\n    player1Win = 0.0\n    player2Win = 0.0\n    for i in range(0, turns):\n        print("Epoch", i)\n        winner = judger.play()\n        if winner == 1:\n            player1Win += 1\n        if winner == -1:\n            player2Win += 1\n        judger.reset()\n    print(player1Win / turns)\n    print(player2Win / turns)\n\ndef play():\n    while True:\n        player1 = Player(exploreRate=0)\n        player2 = HumanPlayer()\n        judger = Judger(player1, player2, False)\n        player1.loadPolicy()\n        winner = judger.play(True)\n        if winner == player2.symbol:\n            print("Win!")\n        elif winner == player1.symbol:\n            print("Lose!")\n        else:\n            print("Tie!")\n\ntrain()\ncompete()\nplay()\n'</code></pre>
+</div>
+</div>
 
 
 </section>
