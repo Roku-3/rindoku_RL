@@ -61,6 +61,7 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -146,6 +147,11 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<p><strong>強化学習</strong>は機械学習の一種で、環境とエージェントの<strong>相互作用</strong>に注目した手法ある。</p>
+<p>教師あり/なし学習と違い、与えられた最適解（もしくは隠れた最適解）を探すのではなく、最も大きい報酬をもたらす行動を自分で見つけ出す。また、あるタイムステップでの行動はその時点での報酬だけではなく、その後の報酬にも影響を与える。よって、<strong>探索</strong>と<strong>遅延報酬</strong>という二つの特性を持つ。</p>
+<p><span class="math display">\[
+V(s) \leftarrow V(s)+\alpha\left[V\left(s^{\prime}\right)-V(s)\right]
+\]</span></p>
 
 
 
