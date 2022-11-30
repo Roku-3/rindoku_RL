@@ -56,13 +56,14 @@ $V(s)$は状態$s$の推定価値を表し、次の手を選択した際、次�
 1.1 自己対戦（self play）
 
 ```{python}
+'''
 import numpy as np
 import pickle
 
 ```
 
 ```{python}
-
+'''
 
 BOARD_ROWS = 3
 BOARD_COLS = 3
