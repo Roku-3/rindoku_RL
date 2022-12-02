@@ -219,14 +219,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p><strong>強化学習</strong>は機械学習の一種で、環境とエージェントの<strong>相互作用</strong>に注目した手法ある。</p>
+<p><strong>強化学習</strong>は機械学習の一種で、環境とエージェントの<strong>相互作用</strong>に注目した手法である。</p>
 <p>教師あり/なし学習と違い、与えられた最適解（もしくは隠れた最適解）を探すのではなく、最も大きい報酬をもたらす行動を自分で見つけ出す。また、あるタイムステップでの行動はその時点での報酬だけではなく、その後の報酬にも影響を与える。よって、<strong>探索</strong>と<strong>遅延報酬</strong>という二つの特性を持つ。</p>
 <section id="具体的な構成要素" class="level2">
 <h2 class="anchored" data-anchor-id="具体的な構成要素">具体的な構成要素</h2>
 <table class="table">
 <colgroup>
-<col style="width: 35%">
-<col style="width: 64%">
+<col style="width: 24%">
+<col style="width: 75%">
 </colgroup>
 <tbody>
 <tr class="odd">
@@ -261,7 +261,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="シンプルな例三目並べ">シンプルな例：三目並べ</h2>
 <p>強化学習を用いて三目並べに勝つことを目標とするエージェントを作る。</p>
 <p>以下のような行動木を作成する。それぞれの状態（盤面）には0~1の価値が設定されている。どうやっても負ける状態には0、既に勝っている状態には1、それ以外には0.5が初期値として割り当てられる。</p>
-<p><img src="./images/1*4TqqW4ku7wmCX0vj-HT_xQ.png" class="img-fluid"></p>
 <p>学習中、基本的には価値が大きい、勝率が高い手を選ぶが、すべての状態を試すためにランダム性を持った行動選択（<strong>探索的な手</strong>）をさせる。</p>
 <p>状態の価値の更新は以下の式で行う。</p>
 <p><span class="math display">\[
