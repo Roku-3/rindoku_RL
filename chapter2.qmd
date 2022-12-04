@@ -62,22 +62,6 @@ $[Target - OldEstimate]$は推定の**誤差**を表している。ステップ�
 
 逐次的計算によるサンプル平均と$\epsilon$-行動選択を使ったk本腕バンディットアルゴリズムの疑似コードは以下のようになる。
 
-$$
-a=1からkについて初期化:\\
-Q(a) \leftarrow 0 \\
-N(a) \leftarrow 0 \\
-\\
-永久に繰り返し:\\
-A \leftarrow 
-\begin{cases}
-\text{arg max}_aQ(a)\ \ \ 確率1-\epsilonで\ \ (同順はランダムに選択) \\
-ランダムな行動\ \ \ 確率\epsilonで
-\end{cases}\\
-R \leftarrow bandit(A)\\
-N(A) \leftarrow N(A)+1\\
-Q(A) \leftarrow Q(A) + \frac{1}{N(A)}[R-Q(A)]
-$$
-
 ## 非定常問題を調べる
 
 非定常的な問題、すなわち、行動に対する報酬(つまり$X_a$)が時間ステップごとに変化する問題の場合については,、新しい報酬の方に重みをつける方が理にかなっている。そこで、逐次更新則は定数$\alpha \in (0,1]$を用いて次のように修正される。
