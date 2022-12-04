@@ -70,8 +70,8 @@ N(a) \leftarrow 0 \\
 永久に繰り返し:\\
 A \leftarrow 
 \begin{cases}
-    \text{arg max}_aQ(a)\ \ \ 確率1-\epsilonで\ \ (同順はランダムに選択) \\
-    ランダムな行動\ \ \ 確率\epsilonで
+\text{arg max}_aQ(a)\ \ \ 確率1-\epsilonで\ \ (同順はランダムに選択) \\
+ランダムな行動\ \ \ 確率\epsilonで
 \end{cases}\\
 R \leftarrow bandit(A)\\
 N(A) \leftarrow N(A)+1\\
