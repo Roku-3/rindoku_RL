@@ -4,14 +4,302 @@ jupyter: python3
 
 # 第２章多腕バンディット問題
 
-##k本腕バンディット問題
+## k本腕バンディット問題
 
-jytfd
+$k$個の選択肢があり、どれか1つを選ぶと選択に依存した定常確率分布から報酬が発生する。これを繰り返し、ある決められた時間ステップにおいて期待合計報酬を最大化する問題を$k$本腕バンディット問題という。以後、時間ステップtで選択された行動を$A_t$、対応する報酬を$R_t$とする。$a$が選択された時の確率変数を$X_a$とすると、$a$が選択されたときの期待報酬$q_*(a)$を次のように定義する。
 
-##行動価値手法
+$$
+q_*(a):=𝔼[X_a]
+$$
 
-##10本腕バンディットによる実験
+時間ステップtの行動aの価値の推定値を$Q_t(a)$とする。これを$q_*(a)$に近づけたい。 推定価値が最大となる行動をグリーディ行動といい、知識を**活用**しているという。そうでないときは**探索**しているという。
 
-##逐次的実装
+## 行動価値手法
 
-##非定常問題を調べる
+行動価値の推定をする方法の総称を**行動価値手法**という。行動価値を推定する自然な方法として、実際に得られた報酬を平均することが挙げられる。
+
+$$
+Q_t(a):= \frac{tより前にaを行ったときの報酬の合計}{tの前までにaを行った回数}=\frac{\sum_{i=1}^{t-1}R_i･𝟙_{A_i=a}}{\sum_{i=1}^{t-1}𝟙_{A_i=a}}
+$$ ただし$𝟙_{条件}$は条件が真のとき1、偽のとき0をとるものとする。これを行動価値推定のための**サンプル平均法**という。毎回最も推定価値が高い行動をするグリーディ行動選択法は次式で表される。
+
+$$
+A_t=\text{arg max}_aQ_t(a)
+$$
+
+ただし$\text{arg max}_a$は$Q_t(a)$が最大となるような$a$をかえす。これをベースとして、探索を行わせるために毎回確率$\epsilon$でランダムな選択を行わせる手法を$\epsilon$**-グリーディ法**という。
+
+## 10本腕バンディットによる実験
+
+2000個のk本腕バンディット問題を、k=10とし、次のようにランダムに生成する：各$q_*(a)$は標準正規分布($N(0,1)$)に従って生成し、各$X_a$は正規分布$N(q_*(a),1)$に従うとする。各問題で、1000ステップの実行を1回の**試行**とする。
+
+2000個の問題それぞれに対しグリーディ法と二つの$\epsilon$**-**グリーディ法を試行し、2000回繰り返し平均をとった結果は以下のようになる。
+
+![](images/c27d33d68b8c4009bf17bf678s246e875-0049.jpg)
+
+図から$\epsilon=0.1$のときは$\epsilon=0.01$のときよりも素早く最適行動をとれていることが分かるが、超長期的な時間ステップでみれば最終的には$\epsilon=0.01$のときの方が良い結果を示すだろうということが分かる。
+
+## 逐次的実装
+
+サンプル平均の計算がどのように簡略化できるのかを紹介する。簡単のため、1本腕バンディット問題でのサンプル平均を考える。ステップ$n$時の推定報酬$Q_n$は次式で表される。
+
+$$
+Q_n:=\frac{R_1+R_2+･･･+R_n}{n-1}
+$$
+
+各$R_n$を記録して毎回$Q_n$を求めるやり方は必要メモリと計算量が増大してしまうが、実際は次式のように逐一更新できる。
+
+$$
+Q_{n+1}=\frac{1}{n}\sum_{i=1}^{n}R_i\\ =\frac{1}{n}(R_n+\sum_{i=1}^{n-1}R_i)\\ =\frac{1}{n}(R_n+(n-1)Q_n)\\ =Q_n+\frac{1}{n}(R_n-Q_n)
+$$
+
+こうすればメモリは$Q_n$と$n$の分だけで良く、計算量も最後の式のみで良くなる。これの一般形は次式で表される。
+
+$$
+NewEstimate \leftarrow OldEstimate + StepSize\ [Target - OldEstimate]
+$$
+
+$[Target - OldEstimate]$は推定の**誤差**を表している。ステップが進むにつれ推定は$Target$(今回は$n$番目の報酬)に近づいていく。今回では$StepSize$は$1/n$と一定だが、ステップに応じて変動することもある。以後ステップサイズパラメータを$\alpha$や$\alpha_t(a)$と表す。
+
+逐次的計算によるサンプル平均と$\epsilon$-行動選択を使ったk本腕バンディットアルゴリズムの疑似コードは以下のようになる。
+
+$$
+a=1からkについて初期化:\\
+Q(a) \leftarrow 0 \\
+N(a) \leftarrow 0 \\
+\\
+永久に繰り返し:\\
+A \leftarrow 
+\begin{cases}
+    \text{arg max}_aQ(a)\ \ \ 確率1-\epsilonで\ \ (同順はランダムに選択) \\
+    ランダムな行動\ \ \ 確率\epsilonで
+\end{cases}\\
+R \leftarrow bandit(A)\\
+N(A) \leftarrow N(A)+1\\
+Q(A) \leftarrow Q(A) + \frac{1}{N(A)}[R-Q(A)]
+$$
+
+## 非定常問題を調べる
+
+非定常的な問題、すなわち、行動に対する報酬(つまり$X_a$)が時間ステップごとに変化する問題の場合については,、新しい報酬の方に重みをつける方が理にかなっている。そこで、逐次更新則は定数$\alpha \in (0,1]$を用いて次のように修正される。
+
+$$
+Q_{n+1}:=Q_n+\alpha[R_n-Q_n]
+$$ これにより$Q_{n+1}$は次のように変形できる。 $$
+Q_{n+1}=Q_n+\alpha[R_n-Q_n]\\
+=\alpha R_n+(1-\alpha)Q_n\\
+=\alpha R_n+(1-\alpha)[\alpha R_{n-1}+(1-\alpha)Q_{n-1}]\\
+=\alpha R_n+(1-\alpha)\alpha R_{n-1}+(1-\alpha)^2Q_{n-1}\\
+これを繰り返し\\
+=(1-a)^nQ_1+\sum_{i-1}^{n}\alpha(1-\alpha)^{n-i}R_i
+$$
+
+$(1-a)^n+\sum_{i-1}^{n}\alpha(1-\alpha)^{n-i}=1$より、$Q_{n+1}$は過去の報酬と初期の推定値$Q_1$の加重平均であることが分かる。重みは$1-\alpha$の冪乗に従って指数的に減衰していくため、この加重平均を**指数直近性加重平均**ともいう。
+
+$\alpha$をステップごとに変動させると便利なこともある。行動aがn番目に選択されたときのステップサイズパラメータを$\alpha_n(a)$と表す。定常的な問題においては、確率近似理論より、推定行動価値が真の行動価値に確率1で収束する必要十分条件は次の通りである。
+
+$$
+\sum_{n=1}^{\infty}\alpha_n(a)=\infty\ かつ\ \sum_{n=1}^{\infty}\alpha_n^2(a)<\infty 
+$$
+
+しかし実用では非定常問題を扱う事が多いので、上式を満たすステップサイズパラメータは理論研究では多用されるが、応用や実験研究ではめったに使用されない。
+
+```{python}
+print("Hello Python!")
+```
+
+```{python}
+# -*- coding:utf-8 -*-
+import numpy as np
+import random
+ 
+class BernoulliArm():
+ 
+    def __init__(self, p):
+        self.p = p
+ 
+    def draw(self):
+        if random.random() > self.p:
+            return 0.0
+        else:
+            return 1.0
+ 
+class random_select():
+ 
+    def __init__(self, counts, values):
+        self.counts = counts
+        self.values = values
+ 
+    def initialize(self, n_arms):
+        self.counts = np.zeros(n_arms)
+        self.values = np.zeros(n_arms)
+ 
+    def select_arm(self):
+        return random.randint(0, len(self.values) - 1)
+ 
+    def update(self, chosen_arm, reward):
+        self.counts[chosen_arm] = self.counts[chosen_arm] + 1
+        n = self.counts[chosen_arm]
+        value = self.values[chosen_arm]
+        new_value = ((n - 1) / float(n)) * value + (1 / float(n)) * reward
+        self.values[chosen_arm] = new_value
+ 
+class EpsilonGreedy():
+ 
+    def __init__(self, epsilon, counts, values):
+        self.epsilon = epsilon
+        self.counts = counts
+        self.values = values
+ 
+    def initialize(self, n_arms):
+        self.counts = np.zeros(n_arms)
+        self.values = np.zeros(n_arms)
+ 
+    def select_arm(self):
+        if random.random() > self.epsilon:
+            return np.argmax(self.values)
+        else:
+            return random.randint(0, len(self.values) - 1)
+ 
+    def update(self, chosen_arm, reward):
+        self.counts[chosen_arm] = self.counts[chosen_arm] + 1
+        n = self.counts[chosen_arm]
+        value = self.values[chosen_arm]
+        new_value = ((n - 1) / float(n)) * value + (1 / float(n)) * reward
+        self.values[chosen_arm] = new_value
+ 
+class UCB():
+ 
+    def __init__(self, counts, values):
+        self.counts = counts
+        self.values = values
+ 
+    def initialize(self, n_arms):
+        self.counts = np.zeros(n_arms)
+        self.values = np.zeros(n_arms)
+ 
+    def select_arm(self):
+        n_arms = len(self.counts)
+        if min(self.counts) == 0:
+            return np.argmin(self.counts)
+ 
+        total_counts = sum(self.counts)
+        bonus = np.sqrt((np.log(np.array(total_counts))) /
+                        2 / np.array(self.counts))
+        ucb_values = np.array(self.values) + bonus
+        return np.argmax(ucb_values)
+ 
+    def update(self, chosen_arm, reward):
+        self.counts[chosen_arm] = self.counts[chosen_arm] + 1
+        n = self.counts[chosen_arm]
+        value = self.values[chosen_arm]
+        new_value = ((n - 1) / float(n)) * value + (1 / float(n)) * reward
+        self.values[chosen_arm] = new_value
+ 
+class ThompsonSampling():
+ 
+    def __init__(self, counts_alpha, counts_beta, values):
+        self.counts_alpha = counts_alpha
+        self.counts_beta = counts_beta
+        self.alpha = 1
+        self.beta = 1
+        self.values = values
+ 
+    def initialize(self, n_arms):
+        self.counts_alpha = np.zeros(n_arms)
+        self.counts_beta = np.zeros(n_arms)
+        self.values = np.zeros(n_arms)
+ 
+    def select_arm(self):
+        theta = [(arm,
+                  random.betavariate(self.counts_alpha[arm] + self.alpha,
+                                     self.counts_beta[arm] + self.beta))
+                 for arm in range(len(self.counts_alpha))]
+        theta = sorted(theta, key=lambda x: x[1])
+        return theta[-1][0]
+ 
+    def update(self, chosen_arm, reward):
+        if reward == 1:
+            self.counts_alpha[chosen_arm] += 1
+        else:
+            self.counts_beta[chosen_arm] += 1
+        n = float(self.counts_alpha[chosen_arm]) + self.counts_beta[chosen_arm]
+        self.values[chosen_arm] = (n - 1) / n * \
+            self.values[chosen_arm] + 1 / n * reward
+ 
+def test_algorithm(algo, arms, num_sims, horizon):
+    chosen_arms = np.zeros(num_sims * horizon)
+    cumulative_rewards = np.zeros(num_sims * horizon)
+    times = np.zeros(num_sims * horizon)
+    for sim in range(num_sims):
+        algo.initialize(len(arms))
+        for t in range(horizon):
+            index = sim * horizon + t
+            times[index] = t + 1
+            chosen_arm = algo.select_arm()
+            chosen_arms[index] = chosen_arm
+            reward = arms[chosen_arm].draw()
+            if t == 0:
+                cumulative_rewards[index] = reward
+            else:
+                cumulative_rewards[index] = cumulative_rewards[
+                    index - 1] + reward
+            algo.update(chosen_arm, reward)
+    return [times, chosen_arms, cumulative_rewards]
+```
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 試行回数を指定
+steps = 1000
+
+# ランダムにマシンを選ぶ確率を指定
+epsilon = 0.1
+
+# マシンの数を指定
+action_size = 10
+
+# インスタンスを作成
+bandit = Bandit(action_size)
+agent = Agent(epsilon, action_size)
+
+# 総報酬を初期化
+total_reward = 0
+
+# 記録用のリストを初期化
+total_rewards = []
+rates = []
+all_rates = np.zeros((action_size, steps+1))
+
+# 初期値を記録
+all_rates[:, 0] = agent.Qs
+
+# 繰り返し試行
+for step in range(steps):
+    # ε-greedy法によりプレイするマシン番号を決定
+    action = agent.get_action()
+    
+    # action番目のマシンをプレイ
+    reward = bandit.play(action)
+    
+    # action番目のマシンの推定価値を更新
+    agent.update(action, reward)
+    
+    # 報酬を加算
+    total_reward += reward
+    
+    # 更新値を記録
+    total_rewards.append(total_reward)
+    rates.append(total_reward / (step + 1))
+    all_rates[:, step+1] = agent.Qs
+
+# 最終結果を確認
+print(total_reward)
+print(rates[steps-1])
+
+
+```
+
+``` [python]
+```
