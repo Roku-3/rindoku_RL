@@ -325,7 +325,7 @@ A_t:=\text{arg max}_a\Bigg(Q_t(a)+c\sqrt{\frac{\log_e t}{N_t(a)}}\Bigg)
 <p>ここでは時刻<span class="math inline">\(t\)</span>に行動<span class="math inline">\(a\)</span>をとる確率を<span class="math inline">\(\pi_t(a)\)</span>と表すとする。また初期状態では全ての行動の優先度を同じとする。</p>
 <p>確率的勾配上昇法に基づいて自然に学習アルゴリズムを設定すると、行動<span class="math inline">\(A_t\)</span>で報酬<span class="math inline">\(R_t\)</span>を受け取った後、行動優先度は次のように更新される。</p>
 <p><span class="math display">\[
-H_{t+1}(A_t)=H_t(A_t)+\alpha(R_t-\overline R_t)(1-\pi_t(A_t)),\\
+H_{t+1}(A_t)=H_t(A_t)+\alpha(R_t-\overline R_t)(1-\pi_t(A_t)),\\\\
 H_{t+1}(a):=H_t(A_t)+\alpha(R_t-\overline R_t)\pi(a)\ \ ( a\neq A_t)
 \]</span></p>
 <p>ただし<span class="math inline">\(\overline R_t\)</span>（ここではベースラインという）は時刻tまでの全ての報酬の平均である。</p>
