@@ -134,7 +134,7 @@ $$
 確率的勾配上昇法に基づいて自然に学習アルゴリズムを設定すると、行動$A_t$で報酬$R_t$を受け取った後、行動優先度は次のように更新される。
 
 $$
-H_{t+1}(A_t)=H_t(A_t)+\alpha(R_t-\overline R_t)(1-\pi_t(A_t)),\\
+H_{t+1}(A_t)=H_t(A_t)+\alpha(R_t-\overline R_t)(1-\pi_t(A_t)),\\\\
 H_{t+1}(a):=H_t(A_t)+\alpha(R_t-\overline R_t)\pi(a)\ \ ( a\neq A_t) 
 $$
 
