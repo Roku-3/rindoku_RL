@@ -197,6 +197,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#本腕バンディットによる実験" id="toc-本腕バンディットによる実験" class="nav-link" data-scroll-target="#本腕バンディットによる実験">10本腕バンディットによる実験</a></li>
   <li><a href="#逐次的実装" id="toc-逐次的実装" class="nav-link" data-scroll-target="#逐次的実装">逐次的実装</a></li>
   <li><a href="#非定常問題を調べる" id="toc-非定常問題を調べる" class="nav-link" data-scroll-target="#非定常問題を調べる">非定常問題を調べる</a></li>
+  <li><a href="#楽観的初期値" id="toc-楽観的初期値" class="nav-link" data-scroll-target="#楽観的初期値">楽観的初期値</a></li>
+  <li><a href="#上限信頼区間行動選択" id="toc-上限信頼区間行動選択" class="nav-link" data-scroll-target="#上限信頼区間行動選択">上限信頼区間行動選択</a></li>
+  <li><a href="#勾配バンディットアルゴリズム" id="toc-勾配バンディットアルゴリズム" class="nav-link" data-scroll-target="#勾配バンディットアルゴリズム">勾配バンディットアルゴリズム</a></li>
+  <li><a href="#連想探索文脈付きバンディット" id="toc-連想探索文脈付きバンディット" class="nav-link" data-scroll-target="#連想探索文脈付きバンディット">連想探索（文脈付きバンディット）</a></li>
+  <li><a href="#まとめ" id="toc-まとめ" class="nav-link" data-scroll-target="#まとめ">まとめ</a></li>
   </ul>
 </nav>
     </div>
@@ -233,7 +238,8 @@ q_*(a):=𝔼[X_a]
 <p>行動価値の推定をする方法の総称を<strong>行動価値手法</strong>という。行動価値を推定する自然な方法として、実際に得られた報酬を平均することが挙げられる。</p>
 <p><span class="math display">\[
 Q_t(a):= \frac{tより前にaを行ったときの報酬の合計}{tの前までにaを行った回数}=\frac{\sum_{i=1}^{t-1}R_i･𝟙_{A_i=a}}{\sum_{i=1}^{t-1}𝟙_{A_i=a}}
-\]</span> ただし<span class="math inline">\(𝟙_{条件}\)</span>は条件が真のとき1、偽のとき0をとるものとする。これを行動価値推定のための<strong>サンプル平均法</strong>という。毎回最も推定価値が高い行動をするグリーディ行動選択法は次式で表される。</p>
+\]</span></p>
+<p>ただし<span class="math inline">\(𝟙_{条件}\)</span>は条件が真のとき1、偽のとき0をとるものとする。これを行動価値推定のための<strong>サンプル平均法</strong>という。毎回最も推定価値が高い行動をするグリーディ行動選択法は次式で表される。</p>
 <p><span class="math display">\[
 A_t=\text{arg max}_aQ_t(a)
 \]</span></p>
@@ -241,8 +247,8 @@ A_t=\text{arg max}_aQ_t(a)
 </section>
 <section id="本腕バンディットによる実験" class="level2">
 <h2 class="anchored" data-anchor-id="本腕バンディットによる実験">10本腕バンディットによる実験</h2>
-<p>2000個のk本腕バンディット問題を、k=10とし、次のようにランダムに生成する：各<span class="math inline">\(q_*(a)\)</span>は標準正規分布(<span class="math inline">\(N(0,1)\)</span>)に従って生成し、各<span class="math inline">\(X_a\)</span>は正規分布<span class="math inline">\(N(q_*(a),1)\)</span>に従うとする。各問題で、1000ステップの実行を1回の<strong>試行</strong>とする。</p>
-<p>2000個の問題それぞれに対しグリーディ法と二つの<span class="math inline">\(\epsilon\)</span><strong>-</strong>グリーディ法を試行し、2000回繰り返し平均をとった結果は以下のようになる。</p>
+<p>2000個のk本腕バンディット問題を、k=10とし、次のようにランダムに生成する：各<span class="math inline">\(q_*(a)\)</span>は標準正規分布(<span class="math inline">\(N(0,1)\)</span>)に従って生成し、各<span class="math inline">\(X_a\)</span>は正規分布<span class="math inline">\(N(q_*(a),1)\)</span>に従うとする。各初期推定値<span class="math inline">\(Q_1(a)\)</span>は0とする。各問題で、1000ステップの実行を1回の<strong>試行</strong>とする。</p>
+<p>2000個の問題それぞれに対しグリーディ法と二つの<span class="math inline">\(\epsilon\)</span>-グリーディ法を試行し、2000回繰り返し平均をとった結果は以下のようになる。</p>
 <p><img src="images/c27d33d68b8c4009bf17bf678s246e875-0049.jpg" class="img-fluid"></p>
 <p>図から<span class="math inline">\(\epsilon=0.1\)</span>のときは<span class="math inline">\(\epsilon=0.01\)</span>のときよりも素早く最適行動をとれていることが分かるが、超長期的な時間ステップでみれば最終的には<span class="math inline">\(\epsilon=0.01\)</span>のときの方が良い結果を示すだろうということが分かる。</p>
 </section>
@@ -268,7 +274,9 @@ NewEstimate \leftarrow OldEstimate + StepSize\ [Target - OldEstimate]
 <p>非定常的な問題、すなわち、行動に対する報酬(つまり<span class="math inline">\(X_a\)</span>)が時間ステップごとに変化する問題の場合については,、新しい報酬の方に重みをつける方が理にかなっている。そこで、逐次更新則は定数<span class="math inline">\(\alpha \in (0,1]\)</span>を用いて次のように修正される。</p>
 <p><span class="math display">\[
 Q_{n+1}:=Q_n+\alpha[R_n-Q_n]
-\]</span> これにより<span class="math inline">\(Q_{n+1}\)</span>は次のように変形できる。 <span class="math display">\[
+\]</span></p>
+<p>これにより<span class="math inline">\(Q_{n+1}\)</span>は次のように変形できる。</p>
+<p><span class="math display">\[
 Q_{n+1}=Q_n+\alpha[R_n-Q_n]\\
 =\alpha R_n+(1-\alpha)Q_n\\
 =\alpha R_n+(1-\alpha)[\alpha R_{n-1}+(1-\alpha)Q_{n-1}]\\
@@ -290,6 +298,49 @@ Q_{n+1}=Q_n+\alpha[R_n-Q_n]\\
 <pre><code>Hello Python!</code></pre>
 </div>
 </div>
+</section>
+<section id="楽観的初期値" class="level2">
+<h2 class="anchored" data-anchor-id="楽観的初期値">楽観的初期値</h2>
+<p>ここまでの手法は初期推定値<span class="math inline">\(Q_1(a)\)</span>にある程度依存する。このことを初期推定値について<strong>バイアス</strong>があるという。</p>
+<p>10本腕バンディットによる実験で、行動価値の初期推定値<span class="math inline">\(Q_1(a)\)</span>を<span class="math inline">\(0\)</span>ではなく<span class="math inline">\(+5\)</span>とする。<span class="math inline">\(q_*(a)\)</span>は標準正規分布から選択されることを考えると楽観的である（<span class="math inline">\(q_*(a)\)</span>が<span class="math inline">\(+5\)</span>以上となる確率は約<span class="math inline">\(2.87\times10^{-7}\)</span>）。よって最初に行動が選択された後、得られた報酬にエージェントは失望して別の行動をする。このようにして探索を促す初期値を<strong>楽観的初期値</strong>という。</p>
+<p>10本腕バンディットによる実験で、各<span class="math inline">\(Q_1(a)\)</span>を<span class="math inline">\(+5\)</span>とした場合のグリーディ法と、各<span class="math inline">\(Q_1(a)\)</span>を<span class="math inline">\(0\)</span>とした場合の<span class="math inline">\(\epsilon\)</span>-グリーディ法の比較を以下に示す。</p>
+<p><img src="images/SuttonBartoIPRLBook2ndEd_page-0054.jpg" class="img-fluid"></p>
+<p>しかしこの手法も探索は一時的にしか促進されないため、非定常問題にはあまり適さない。</p>
+</section>
+<section id="上限信頼区間行動選択" class="level2">
+<h2 class="anchored" data-anchor-id="上限信頼区間行動選択">上限信頼区間行動選択</h2>
+<p><span class="math inline">\(\epsilon\)</span>-グリーディ法での探索は行動がランダムが選ばれるが、実際に最適行動である可能性に応じて探索を行うほうが望ましい。すなわち、推定値及びその推定値の不確実性を考慮して選択すれば良い。例えば次式に従って行動することが挙げられる。</p>
+<p><span class="math display">\[
+A_t:=\text{arg max}_a\Bigg(Q_t(a)+c\sqrt{\frac{\log_e t}{N_t(a)}}\Bigg)
+\]</span></p>
+<p><span class="math inline">\(N_t(a)\)</span>は時刻<span class="math inline">\(t\)</span>までに行動<span class="math inline">\(a\)</span>が選択された回数、<span class="math inline">\(c&gt;0\)</span>は探索を制御する数である。これを<strong>上限信頼区間行動選択（UCB）</strong>という。UCBを用いた10本腕バンディットによる実験結果を以下に示す。</p>
+<p><img src="images/SuttonBartoIPRLBook2ndEd_page-0056.jpg" class="img-fluid"> 多くの場合でUCBは良い性能を示すが、<span class="math inline">\(\epsilon\)</span>-グリーディと比べると、一般的な強化学習に拡張して用いることは計算や近似の面において困難であることが多いので、通常は実用的でない。</p>
+</section>
+<section id="勾配バンディットアルゴリズム" class="level2">
+<h2 class="anchored" data-anchor-id="勾配バンディットアルゴリズム">勾配バンディットアルゴリズム</h2>
+<p>本章では推定行動価値を行動選択に用いてきた。しかし他にもやり方はある。各行動<span class="math inline">\(a\)</span>に対して数値的に表される<strong>優先度</strong>（<span class="math inline">\(H_t(a)\)</span>と表す）を学習する方法を考える。行動確率は次のような<strong>ソフトマックス分布</strong>に従う。</p>
+<p><span class="math display">\[
+\text{Pr}\{A_t=a\}:=\pi_t(a):=\frac{e^{H_t(a)}}{\sum_{b=1}^{k}e^{H_t(b)}}
+\]</span></p>
+<p>ここでは時刻<span class="math inline">\(t\)</span>に行動<span class="math inline">\(a\)</span>をとる確率を<span class="math inline">\(\pi_t(a)\)</span>と表すとする。また初期状態では全ての行動の優先度を同じとする。</p>
+<p>確率的勾配上昇法に基づいて自然に学習アルゴリズムを設定すると、行動<span class="math inline">\(A_t\)</span>で報酬<span class="math inline">\(R_t\)</span>を受け取った後、行動優先度は次のように更新される。</p>
+<p><span class="math display">\[
+H_{t+1}(A_t)=H_t(A_t)+\alpha(R_t-\overline R_t)(1-\pi_t(A_t)),\\
+H_{t+1}(a):=H_t(A_t)+\alpha(R_t-\overline R_t)\pi(a)\ \ ( a\neq A_t)
+\]</span></p>
+<p>ただし<span class="math inline">\(\overline R_t\)</span>（ここではベースラインという）は時刻tまでの全ての報酬の平均である。</p>
+<p>例えばk本腕バンディット問題において、<span class="math inline">\(q_*(a)\)</span>が平均<span class="math inline">\(+4\)</span>、分散<span class="math inline">\(1\)</span>の正規分布から選択されるとする。報酬全体の値が大きくなってもベースラインがそれに応じて増加するので勾配バンディットアルゴリズムでは全く影響しない。しかしベースラインを考慮しない（<span class="math inline">\(\overline R_t\)</span>=0とする）と次の図からも分かるように性能は大幅に低下する。</p>
+<p><img src="images/SuttonBartoIPRLBook2ndEd_page-0058.jpg" class="img-fluid"></p>
+</section>
+<section id="連想探索文脈付きバンディット" class="level2">
+<h2 class="anchored" data-anchor-id="連想探索文脈付きバンディット">連想探索（文脈付きバンディット）</h2>
+<p>第二章では状況に応じて異なる行動をとらせる必要のないような非連想的なタスクのみを考えてきた。しかし一般の強化学習のタスクでは複数の状況があり、方策、すなわちある状態でのそこからとるべき行動への写像を学習することを目標とする。</p>
+<p>例えば、複数のk本腕バンディット問題（タスク）があり、各ステップでランダムに選択されたタスクを行うとする。これは単一の非定常バンディット問題として考えることができるが、これだけだと解を得るのが困難である。そこで各ステップでどのタスクが選ばれたかを示す手がかり（タスクを区別する情報）を得るとする。この場合だとタスクに応じた行動を学習できる。このような問題を<strong>連想探索</strong>や<strong>文脈付きバンディット</strong>という。</p>
+</section>
+<section id="まとめ" class="level2">
+<h2 class="anchored" data-anchor-id="まとめ">まとめ</h2>
+<p>これまでの手法のk本腕バンディット問題における性能を以下に示す。<span class="math inline">\(x\)</span>軸では各パラメータの値(<span class="math inline">\(\epsilon\)</span>、<span class="math inline">\(\alpha\)</span>、<span class="math inline">\(c\)</span>、楽観的初期値<span class="math inline">\(Q_0\)</span>)が対数スケールでとられていることに注意。</p>
+<p><img src="images/SuttonBartoIPRLBook2ndEd_page-0062.jpg" class="img-fluid"></p>
 
 
 </section>
