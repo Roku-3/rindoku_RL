@@ -124,22 +124,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
- var mathElements = document.getElementsByClassName("math");
- var macros = [];
- for (var i = 0; i < mathElements.length; i++) {
-  var texText = mathElements[i].firstChild;
-  if (mathElements[i].tagName == "SPAN") {
-   katex.render(texText.data, mathElements[i], {
-    displayMode: mathElements[i].classList.contains('display'),
-    throwOnError: false,
-    macros: macros,
-    fleqn: false
-   });
-}}});
-  </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -278,10 +263,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>以下のような行動木を作成する。それぞれの状態（盤面）には0~1の価値が設定されている。どうやっても負ける状態には0、既に勝っている状態には1、それ以外には0.5が初期値として割り当てられる。</p>
 <p>学習中、基本的には価値が大きい、勝率が高い手を選ぶが、すべての状態を試すためにランダム性を持った行動選択（<strong>探索的な手</strong>）をさせる。</p>
 <p>状態の価値の更新は以下の式で行う。</p>
-<p><span class="math display">
+<p><span class="math display">\[
 V(s_t) \leftarrow V(s_t)+\alpha\left[V\left(s_{t+1}\right)-V(s_t)\right]
-</span></p>
-<p><span class="math inline">V(s)</span>は状態<span class="math inline">s</span>の推定価値を表し、次の手を選択した際、次の状態の価値に近づけている。ステップサイズパラメータ<span class="math inline">\alpha</span>によって学習率を調整している。</p>
+\]</span></p>
+<p><span class="math inline">\(V(s)\)</span>は状態<span class="math inline">\(s\)</span>の推定価値を表し、次の手を選択した際、次の状態の価値に近づけている。ステップサイズパラメータ<span class="math inline">\(\alpha\)</span>によって学習率を調整している。</p>
 <p>この更新則は<strong>TD学習</strong>（時間差分学習; temporal-difference learning）と呼ばれる。&nbsp;</p>
 </section>
 <section id="練習問題" class="level2">
