@@ -162,10 +162,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="エージェントと環境の境界">エージェントと環境の境界</h2>
 <p>各ステップ<span class="math inline">\(t\)</span>ごとにエージェントは環境の状態<span class="math inline">\(S\)</span>をもとに行動<span class="math inline">\(A\)</span>を選択する。1ステップ後に、行動の結果となる報酬<span class="math inline">\(R_{t+1}\)</span>と次の状態<span class="math inline">\(S_{t+1}\)</span>を獲得する。</p>
 <p><img src="images/paste-74DCA7F3.png" class="img-fluid"></p>
-<p>MDPでは次のような<strong>軌道(trajectory)</strong>を生成する。</p>
-<p><span class="math display">\[
-S_0,A_0,R_1,S_1,A_1,R_2,S_2,A_2,R_3,...
-\]</span></p>
+<p>マルコフ決定過程では、次に起こる事象の確率が、<strong>現在の状態によってのみ決定される</strong>。つまり、各状態は将来的な報酬にどれほど影響するのかといった情報を持たなければいけない。これが満たされるとき、<strong>マルコフ性</strong>を持つといわれる。</p>
 </section>
 <section id="目的と報酬" class="level2">
 <h2 class="anchored" data-anchor-id="目的と報酬">目的と報酬</h2>
