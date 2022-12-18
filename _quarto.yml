@@ -18,7 +18,8 @@ highlight-style: pygments
 
 format:
   html:
-    html-math-method: katex
+    html-math-method:
+      method: mathjax
     number-sections: false
     code-copy: true
     theme: cosmo
