@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.280">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>強化学習 輪読会 - 5&nbsp; 第３章</title>
+<title>強化学習 輪読会 - 5&nbsp; 第３章 有限マルコフ決定過程</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -60,6 +60,7 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -70,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-title">第３章</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-title">第３章 有限マルコフ決定過程</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -115,7 +116,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapter3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">第３章</span></a>
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">第３章 有限マルコフ決定過程</span></a>
   </div>
 </li>
     </ul>
@@ -123,14 +124,24 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#エージェントと環境の境界" id="toc-エージェントと環境の境界" class="nav-link active" data-scroll-target="#エージェントと環境の境界">エージェントと環境の境界</a></li>
+  <li><a href="#目的と報酬" id="toc-目的と報酬" class="nav-link" data-scroll-target="#目的と報酬">目的と報酬</a></li>
+  <li><a href="#収益とエピソード" id="toc-収益とエピソード" class="nav-link" data-scroll-target="#収益とエピソード">収益とエピソード</a></li>
+  <li><a href="#エピソード的タスクと連続タスクの統一的記法" id="toc-エピソード的タスクと連続タスクの統一的記法" class="nav-link" data-scroll-target="#エピソード的タスクと連続タスクの統一的記法">エピソード的タスクと連続タスクの統一的記法</a></li>
+  <li><a href="#方策と価値関数" id="toc-方策と価値関数" class="nav-link" data-scroll-target="#方策と価値関数">方策と価値関数</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-title">第３章</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-title">第３章 有限マルコフ決定過程</span></h1>
 </div>
 
 
@@ -145,8 +156,34 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<p>バンディット問題での各行動<span class="math inline">\(a\)</span>に価値<span class="math inline">\(q_*(a)\)</span>を推定した。</p>
+<p>有限マルコフ決定過程（有限MDP）では状態<span class="math inline">\(s\)</span>における行動価値<span class="math inline">\(q_*(s,a)\)</span>と、最適な行動選択のもとでの状態の価値<span class="math inline">\(v_*(s)\)</span>を推定する。</p>
+<section id="エージェントと環境の境界" class="level2">
+<h2 class="anchored" data-anchor-id="エージェントと環境の境界">エージェントと環境の境界</h2>
+<p>各ステップ<span class="math inline">\(t\)</span>ごとにエージェントは環境の状態<span class="math inline">\(S\)</span>をもとに行動<span class="math inline">\(A\)</span>を選択する。1ステップ後に、行動の結果となる報酬<span class="math inline">\(R_{t+1}\)</span>と次の状態<span class="math inline">\(S_{t+1}\)</span>を獲得する。</p>
+<p><img src="images/paste-74DCA7F3.png" class="img-fluid"></p>
+<p>MDPでは次のような<strong>軌道(trajectory)</strong>を生成する。</p>
+<p><span class="math display">\[
+S_0,A_0,R_1,S_1,A_1,R_2,S_2,A_2,R_3,...
+\]</span></p>
+</section>
+<section id="目的と報酬" class="level2">
+<h2 class="anchored" data-anchor-id="目的と報酬">目的と報酬</h2>
+<p>報酬信号は最終目標</p>
+</section>
+<section id="収益とエピソード" class="level2">
+<h2 class="anchored" data-anchor-id="収益とエピソード">収益とエピソード</h2>
+</section>
+<section id="エピソード的タスクと連続タスクの統一的記法" class="level2">
+<h2 class="anchored" data-anchor-id="エピソード的タスクと連続タスクの統一的記法">エピソード的タスクと連続タスクの統一的記法</h2>
+<p><img src="images/paste-805051E4.png" class="img-fluid"></p>
+</section>
+<section id="方策と価値関数" class="level2">
+<h2 class="anchored" data-anchor-id="方策と価値関数">方策と価値関数</h2>
+<p><img src="images/paste-C3F14B56.png" class="img-fluid"></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.280">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -180,7 +180,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./chapter3.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第３章</span></a>
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">第３章 有限マルコフ決定過程</span></a>
   </div>
 </li>
     </ul>
@@ -277,11 +277,11 @@ Q_{n+1}:=Q_n+\alpha[R_n-Q_n]
 \]</span></p>
 <p>これにより<span class="math inline">\(Q_{n+1}\)</span>は次のように変形できる。</p>
 <p><span class="math display">\[
-Q_{n+1}=Q_n+\alpha[R_n-Q_n]\\
-=\alpha R_n+(1-\alpha)Q_n\\
-=\alpha R_n+(1-\alpha)[\alpha R_{n-1}+(1-\alpha)Q_{n-1}]\\
-=\alpha R_n+(1-\alpha)\alpha R_{n-1}+(1-\alpha)^2Q_{n-1}\\
-これを繰り返し\\
+Q_{n+1}=Q_n+\alpha[R_n-Q_n] \\
+=\alpha R_n+(1-\alpha)Q_n \\
+=\alpha R_n+(1-\alpha)[\alpha R_{n-1}+(1-\alpha)Q_{n-1}] \\
+=\alpha R_n+(1-\alpha)\alpha R_{n-1}+(1-\alpha)^2Q_{n-1} \\
+これを繰り返し \\
 =(1-a)^nQ_1+\sum_{i-1}^{n}\alpha(1-\alpha)^{n-i}R_i
 \]</span></p>
 <p><span class="math inline">\((1-a)^n+\sum_{i-1}^{n}\alpha(1-\alpha)^{n-i}=1\)</span>より、<span class="math inline">\(Q_{n+1}\)</span>は過去の報酬と初期の推定値<span class="math inline">\(Q_1\)</span>の加重平均であることが分かる。重みは<span class="math inline">\(1-\alpha\)</span>の冪乗に従って指数的に減衰していくため、この加重平均を<strong>指数直近性加重平均</strong>ともいう。</p>
@@ -487,7 +487,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./chapter3.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-title">第３章</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-title">第３章 有限マルコフ決定過程</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
