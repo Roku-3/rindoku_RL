@@ -130,7 +130,11 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#エージェントと環境の境界" id="toc-エージェントと環境の境界" class="nav-link active" data-scroll-target="#エージェントと環境の境界">エージェントと環境の境界</a></li>
   <li><a href="#目的と報酬" id="toc-目的と報酬" class="nav-link" data-scroll-target="#目的と報酬">目的と報酬</a></li>
-  <li><a href="#収益とエピソード" id="toc-収益とエピソード" class="nav-link" data-scroll-target="#収益とエピソード">収益とエピソード</a></li>
+  <li><a href="#収益とエピソード" id="toc-収益とエピソード" class="nav-link" data-scroll-target="#収益とエピソード">収益とエピソード</a>
+  <ul class="collapse">
+  <li><a href="#エピソード的タスク" id="toc-エピソード的タスク" class="nav-link" data-scroll-target="#エピソード的タスク">エピソード的タスク</a></li>
+  <li><a href="#連続タスク" id="toc-連続タスク" class="nav-link" data-scroll-target="#連続タスク">連続タスク</a></li>
+  </ul></li>
   <li><a href="#エピソード的タスクと連続タスクの統一的記法" id="toc-エピソード的タスクと連続タスクの統一的記法" class="nav-link" data-scroll-target="#エピソード的タスクと連続タスクの統一的記法">エピソード的タスクと連続タスクの統一的記法</a></li>
   <li><a href="#方策と価値関数" id="toc-方策と価値関数" class="nav-link" data-scroll-target="#方策と価値関数">方策と価値関数</a></li>
   </ul>
@@ -162,18 +166,55 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="エージェントと環境の境界">エージェントと環境の境界</h2>
 <p>各ステップ<span class="math inline">\(t\)</span>ごとにエージェントは環境の状態<span class="math inline">\(S\)</span>をもとに行動<span class="math inline">\(A\)</span>を選択する。1ステップ後に、行動の結果となる報酬<span class="math inline">\(R_{t+1}\)</span>と次の状態<span class="math inline">\(S_{t+1}\)</span>を獲得する。</p>
 <p><img src="images/paste-74DCA7F3.png" class="img-fluid"></p>
-<p>マルコフ決定過程では、次に起こる事象の確率が、<strong>現在の状態によってのみ決定される</strong>。つまり、各状態は将来的な報酬にどれほど影響するのかといった情報を持たなければいけない。これが満たされるとき、<strong>マルコフ性</strong>を持つといわれる。</p>
+<p><span class="math display">\[
+p\left(s^{\prime}, r \mid s, a\right)=\operatorname{Pr}\left\{S_{t+1}=s^{\prime}, R_{t+1}=r \mid S_t=s, A_t=a\right\} .
+\]</span></p>
+<p>上の式からわかるように、マルコフ決定過程では次に起こる事象の確率が<strong>現在の状態によってのみ決定される</strong>。つまり、各状態は将来的な報酬にどれほど影響するのかといった情報を持たなければいけない。これが満たされるとき、<strong>マルコフ性</strong>を持つといわれる。</p>
+<p>遷移確率は引数を変えても以下のように計算可能である。</p>
+<p><span class="math display">\[
+r(s, a)=\mathbb{E}\left[R_{t+1} \mid S_t=s, A_t=a\right]=\sum_{r \in \mathcal{R}} r \sum_{s^{\prime} \in \mathcal{S}} p\left(s^{\prime}, r \mid s, a\right),
+\]</span></p>
+<p><span class="math display">\[
+p\left(s^{\prime} \mid s, a\right)=\operatorname{Pr}\left\{S_{t+1}=s^{\prime} \mid S_t=s, A_t=a\right\}=\sum_{r \in \mathcal{R}} p\left(s^{\prime}, r \mid s, a\right),
+\]</span></p>
+<p><span class="math display">\[
+r\left(s, a, s^{\prime}\right)=\mathbb{E}\left[R_{t+1} \mid S_t=s, A_t=a, S_{t+1}=s^{\prime}\right]=\frac{\sum_{r \in \mathcal{R}} r p\left(s^{\prime}, r \mid s, a\right)}{p\left(s^{\prime} \mid s, a\right)} .
+\]</span></p>
+<p>エージェントと環境の境界とは<strong>絶対的な制御</strong>の限界を表すものである。エージェントによって自在に変更できないものは環境として扱う。</p>
 </section>
 <section id="目的と報酬" class="level2">
 <h2 class="anchored" data-anchor-id="目的と報酬">目的と報酬</h2>
-<p>報酬信号は最終目標</p>
+<p>学習の最終的な目標は報酬の累積和の期待値を最大化することだと考えられる。</p>
+<p>重要なのは、<strong>報酬信号は最終目標</strong>に対して使うこと。目標達成の方法・過程に対して報酬をあたえてしまうと目標を達成せずに報酬を得るよう学習してしまう可能性がある。</p>
 </section>
 <section id="収益とエピソード" class="level2">
 <h2 class="anchored" data-anchor-id="収益とエピソード">収益とエピソード</h2>
+<p>強化学習タスクは<strong>エピソード的タスク</strong>と<strong>連続タスク</strong>に分類される。</p>
+<section id="エピソード的タスク" class="level3">
+<h3 class="anchored" data-anchor-id="エピソード的タスク">エピソード的タスク</h3>
+<p>学習に<strong>終端状態</strong>が存在する。分割できるそれぞれの系列を<strong>エピソード</strong>もしくはトライアルと呼ぶ。</p>
+<p>報酬の累積である期待収益<span class="math inline">\(G_t\)</span>を最大化する。 <span class="math inline">\(T\)</span>は最後の時間ステップである。</p>
+<p><span class="math display">\[
+G_t \doteq R_{t+1}+R_{t+2}+R_{t+3}+\dots+R_T
+\]</span></p>
+</section>
+<section id="連続タスク" class="level3">
+<h3 class="anchored" data-anchor-id="連続タスク">連続タスク</h3>
+<p>系列を分割できず、学習が制限なく続く。<span class="math inline">\(T=\infty\)</span></p>
+<p>期待割引収益を最大化する。<span class="math inline">\(\gamma\)</span>は<strong>割引率</strong>とよばれる。</p>
+<p><span class="math display">\[
+G_t\doteq R_{t+1}+\gamma R_{t+2}+\gamma^2 R_{t+3}+\cdots=\sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
+\]</span></p>
+</section>
 </section>
 <section id="エピソード的タスクと連続タスクの統一的記法" class="level2">
 <h2 class="anchored" data-anchor-id="エピソード的タスクと連続タスクの統一的記法">エピソード的タスクと連続タスクの統一的記法</h2>
+<p><strong>吸着状態</strong>という概念によって、エピソード的タスクと連続タスクの期待収益を同じものとしてみなすことができる。エピソードの終了<span class="math inline">\(T\)</span>以降を報酬0の自身への遷移だと考える。</p>
 <p><img src="images/paste-805051E4.png" class="img-fluid"></p>
+<p>連続タスクでは<span class="math inline">\(T=\infty\)</span>、エピソード的タスクでは<span class="math inline">\(\gamma=1\)</span>だとして、 次のように式を統一できる。</p>
+<p><span class="math display">\[
+G_t=\sum_{k=0}^{T-t-1} \gamma^k R_{t+k+1}
+\]</span></p>
 </section>
 <section id="方策と価値関数" class="level2">
 <h2 class="anchored" data-anchor-id="方策と価値関数">方策と価値関数</h2>
